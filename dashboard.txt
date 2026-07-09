@@ -1,0 +1,59 @@
+ <table className="w-full bg-white text-black text-[16px]">
+        <thead>
+          <tr className="bg-black text-white border-2">
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody className="border">
+          {employees.map((employee) => (
+            <tr key={employee.employeeId} className="border-[1]">
+              <td className="w-150px">{employee.name}</td>
+              <td>{employee.email}</td>
+              <td>{employee.department.name}</td>
+              <td>{employee.designation.name}</td>
+              <td>
+                {employee.status === "Active" ? "🟢 Active" : "🔴 Inactive"}
+              </td>
+              <td>
+                <button className="bg-blue-800 text-white p-1 m-1 w-20">
+                  👁 View
+                </button>
+                <button className="bg-blue-800 text-white p-1 m-1 w-20">
+                  ✏ Edit
+                </button>
+                <button className="bg-red-800 text-white p-1 m-1 w-20">
+                  🗑 Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      ================
+
+       const sortedData = useMemo(() => {
+    const sorted = [...filteredData];
+
+    sorted.sort((a, b) => {
+      let comparison = 0;
+      if (sortField === "name") {
+        comparison = a.name.localeCompare(b.name);
+      } else if (sortField === "email") {
+        comparison = a.email.localeCompare(b.email);
+      } else if (sortField === "department") {
+        comparison = a.department.name.localeCompare(b.department.name);
+      } else if (sortField === "designation") {
+        comparison = a.designation.name.localeCompare(b.designation.name);
+      }
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+    return sorted;
+  }, [filteredData, sortField, sortOrder]);
+
+

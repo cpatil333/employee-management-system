@@ -1,4 +1,3 @@
-import React from "react";
 import { dashboard } from "../data/dashboard";
 
 export default function DashboardPage() {

@@ -3,7 +3,7 @@ export type Employee = {
   name: string;
   email: string;
   department: Department;
-  designation: Role;
+  designation: Designation;
   status: "Active" | "Inactive";
   phone: string;
   address1: string;
@@ -23,7 +23,7 @@ export type Department = {
   name: string;
 };
 
-export type Role = {
+export type Designation = {
   id: number;
   name: string;
 };
