@@ -1,66 +1,53 @@
- <table className="w-full bg-white text-black text-[16px]">
-        <thead>
-          <tr className="bg-black text-white border-2">
-            <th>Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Designation</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody className="border">
-          {employees.map((employee) => (
-            <tr key={employee.employeeId} className="border-[1]">
-              <td className="w-150px">{employee.name}</td>
-              <td>{employee.email}</td>
-              <td>{employee.department.name}</td>
-              <td>{employee.designation.name}</td>
-              <td>
-                {employee.status === "Active" ? "🟢 Active" : "🔴 Inactive"}
-              </td>
-              <td>
-                <button className="bg-blue-800 text-white p-1 m-1 w-20">
-                  👁 View
-                </button>
-                <button className="bg-blue-800 text-white p-1 m-1 w-20">
-                  ✏ Edit
-                </button>
-                <button className="bg-red-800 text-white p-1 m-1 w-20">
-                  🗑 Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+import { Employee } from "@/app/types/empoyee.types";
+import { useForm } from "react-hook-form";
 
-      ================
+type EmployeeFormProps = {
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-       const sortedData = useMemo(() => {
-    const sorted = [...filteredData];
+export default function EmployeeForm({ setIsModalOpen }: EmployeeFormProps) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Employee>({
+    defaultValues: {
+      employeeId: 0,
+      name: "",
+      email: "",
+      department: { id: "1", name: "" },
+      designation: { id: "1", name: "" },
+      status: "Active",
+      phone: "",
+      address1: "",
+      address2: "",
+      country: "",
+      state: "",
+      city: "",
+      pincode: "",
+      joiningDate: "",
+      salary: 0,
+      gender: "Male",
+      maritalStatus: "Married",
+    },
+  });
 
-    sorted.sort((a, b) => {
-      let comparison = 0;
-      if (sortField === "name") {
-        comparison = a.name.localeCompare(b.name);
-      } else if (sortField === "email") {
-        comparison = a.email.localeCompare(b.email);
-      } else if (sortField === "department") {
-        comparison = a.department.name.localeCompare(b.department.name);
-      } else if (sortField === "designation") {
-        comparison = a.designation.name.localeCompare(b.designation.name);
-      }
-      return sortOrder === "asc" ? comparison : -comparison;
-    });
-    return sorted;
-  }, [filteredData, sortField, sortOrder]);
+  const onSubmit = (data: Employee) => {
+    console.log(data);
+    setIsModalOpen(false);
+    reset();
+  };
 
-======================
-
-  <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <h3 className="mt-5">Personal Information</h3>
+  return (
+    <div className="h-[calc(90vh-72px)] overflow-y-auto p-6 text-black">
+      <h1 className="text-3xl font-bold">Employee Information</h1>
+      <hr />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-2 gap-4">
+          <h3 className="mt-5 text-2xl font-bold underline">
+            Personal Information
+          </h3>
           <hr className="w-100" />
           <div>
             <label className="font-bold">Name : </label>
@@ -129,8 +116,8 @@
             )}
           </div>
         </div>
-        <div>
-          <h3 className="mt-5">Job Information</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <h3 className="mt-5 text-2xl font-bold underline">Job Information</h3>
           <hr className="w-100" />
           <div>
             <label className="font-bold">Department : </label>
@@ -205,8 +192,8 @@
             )}
           </div>
         </div>
-        <div>
-          <h3 className="mt-5">Address</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <h3 className="mt-5 text-2xl font-bold underline">Address</h3>
           <hr className="w-100" />
           <div>
             <label className="font-bold">Address Line 1 : </label>
@@ -272,20 +259,22 @@
             )}
           </div>
         </div>
-        <div>
+        <div className="text-center justify-center">
           <button
             onClick={() => setIsModalOpen(false)}
             type="button"
-            className="bg-blue-700 text-white p-2 m-2"
+            className="bg-blue-700 text-xl text-white p-2 m-2"
           >
             Close
           </button>
-          <button type="submit" className="bg-blue-700 text-white p-2 m-2">
+          <button
+            type="submit"
+            className="bg-blue-700  text-xl text-white p-2 m-2"
+          >
             Save Employee
           </button>
         </div>
       </form>
-
-      ==================
-
-
+    </div>
+  );
+}

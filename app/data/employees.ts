@@ -183,7 +183,7 @@ export const employees: Employee[] = [
     name: "Anjali Menon",
     email: "anjali.menon@company.com",
     department: { id: 1, name: "Information Technology" },
-    designation: { id: 2, name: "Backend Developer" },
+    designation: { id: 6, name: "Backend Developer" },
     status: "Active",
     phone: "+91 90123 45678",
     address1: "Flat 3A, Tower 2, Prestige Ozone",

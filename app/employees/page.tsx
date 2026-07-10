@@ -5,13 +5,15 @@ import EmployeeTable from "../components/employee/EmployeeTable";
 import EmployeeToolbar from "../components/employee/EmployeeToolbar";
 import Pagination from "../components/employee/Pagination";
 import { employees } from "../data/employees";
+import { SortField, SORT_FIELDS } from "../constant/employee.constants";
 
 export default function EmployeePage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortField, setSortField] = useState<
-    "name" | "email" | "department" | "designation" | "status"
-  >("name");
+  const [sortField, setSortField] = useState<SortField>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [selectedDepartment, setSelectedDepartment] = useState(0);
+  const [selectedDesignation, setSelectedDesignation] = useState(0);
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const perPage = 5;
   const totalPages = Math.ceil(employees.length / perPage);
@@ -20,18 +22,34 @@ export default function EmployeePage() {
     setCurrentPage(1);
   }, [searchTerm]);
 
+  // console.log(searchTerm);
   //filtered data
   const filteredEmployees = useMemo(() => {
-    if (searchTerm.trim() !== "") {
-      return employees.filter((employee: Employee) => {
-        return (
-          employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          employee.email.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      });
-    }
-    return employees;
-  }, [searchTerm]);
+    return employees.filter((employee) => {
+      const matchesSearch =
+        employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesDepartment =
+        selectedDepartment === 0 ||
+        employee.department.id === selectedDepartment;
+
+      const matchesDesignation =
+        selectedDesignation === 0 ||
+        employee.designation.id === selectedDesignation;
+
+      const matchesStatus =
+        selectedStatus === "" ||
+        employee.status.toLowerCase() === selectedStatus.toLowerCase();
+
+      return (
+        matchesSearch &&
+        matchesDepartment &&
+        matchesDesignation &&
+        matchesStatus
+      );
+    });
+  }, [searchTerm, selectedDepartment, selectedDesignation, selectedStatus]);
 
   //sorting data
   const sortedEmployees = useMemo(() => {
@@ -62,9 +80,7 @@ export default function EmployeePage() {
     return sortedEmployees.slice(startIndex, startIndex + perPage);
   }, [sortedEmployees, currentPage]);
 
-  const handleSort = (
-    field: "name" | "email" | "department" | "designation" | "status",
-  ) => {
+  const handleSort = (field: SortField) => {
     console.log(field);
     if (sortField === field) {
       setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -79,10 +95,9 @@ export default function EmployeePage() {
     <div>
       <EmployeeToolbar
         setSearchTerm={setSearchTerm}
-        sortField={sortField}
-        currentPage={currentPage}
-        sortedEmployees={sortedEmployees}
-        paginatedEmployees={paginatedEmployees}
+        setSelectedDepartment={setSelectedDepartment}
+        setSelectedDesignation={setSelectedDesignation}
+        setSelectedStatus={setSelectedStatus}
       />
       <EmployeeTable
         paginatedEmployees={paginatedEmployees}

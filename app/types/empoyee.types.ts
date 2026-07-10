@@ -19,11 +19,11 @@ export type Employee = {
 };
 
 export type Department = {
-  id: number;
+  id: string;
   name: string;
 };
 
 export type Designation = {
-  id: number;
+  id: string;
   name: string;
 };

@@ -1,13 +1,12 @@
 import { Employee } from "@/app/types/empoyee.types";
 import EmployeeRow from "./EmployeeRow";
+import { SortField } from "../../constant/employee.constants";
 
 type EmployeeTableProps = {
   paginatedEmployees: Employee[];
   sortField: string;
   sortOrder: string;
-  handleSort: (
-    field: "name" | "email" | "department" | "designation" | "status",
-  ) => void;
+  handleSort: (field: SortField) => void;
 };
 
 export default function EmployeeTable({
