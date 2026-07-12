@@ -5,9 +5,16 @@ import EmployeeTable from "../components/employee/EmployeeTable";
 import EmployeeToolbar from "../components/employee/EmployeeToolbar";
 import Pagination from "../components/employee/Pagination";
 import { employees } from "../data/employees";
-import { SortField, SORT_FIELDS } from "../constant/employee.constants";
+import { SortField } from "../constant/employee.constants";
+import { department } from "../data/department";
+import { designation } from "../data/designation";
 
 export default function EmployeePage() {
+  const [employeeList, setEmployeeList] = useState(employees);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null,
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -25,18 +32,18 @@ export default function EmployeePage() {
   // console.log(searchTerm);
   //filtered data
   const filteredEmployees = useMemo(() => {
-    return employees.filter((employee) => {
+    return employeeList.filter((employee) => {
       const matchesSearch =
         employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.email.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesDepartment =
         selectedDepartment === 0 ||
-        employee.department.id === selectedDepartment;
+        employee.departmentId === selectedDepartment;
 
       const matchesDesignation =
         selectedDesignation === 0 ||
-        employee.designation.id === selectedDesignation;
+        employee.designationId === selectedDesignation;
 
       const matchesStatus =
         selectedStatus === "" ||
@@ -49,7 +56,13 @@ export default function EmployeePage() {
         matchesStatus
       );
     });
-  }, [searchTerm, selectedDepartment, selectedDesignation, selectedStatus]);
+  }, [
+    employeeList,
+    searchTerm,
+    selectedDepartment,
+    selectedDesignation,
+    selectedStatus,
+  ]);
 
   //sorting data
   const sortedEmployees = useMemo(() => {
@@ -58,8 +71,10 @@ export default function EmployeePage() {
     const sortFunctions = {
       name: (e: Employee) => e.name,
       email: (e: Employee) => e.email,
-      department: (e: Employee) => e.department.name,
-      designation: (e: Employee) => e.designation.name,
+      department: (e: Employee) =>
+        department.find((d) => d.id === e.departmentId)?.name ?? "",
+      designation: (e: Employee) =>
+        designation.find((d) => d.id === e.designationId)?.name ?? "",
       status: (e: Employee) => e.status,
     };
 
@@ -98,12 +113,19 @@ export default function EmployeePage() {
         setSelectedDepartment={setSelectedDepartment}
         setSelectedDesignation={setSelectedDesignation}
         setSelectedStatus={setSelectedStatus}
+        setEmployeeList={setEmployeeList}
+        setIsModalOpen={setIsModalOpen}
+        isModalOpen={isModalOpen}
+        selectedEmployee={selectedEmployee}
+        setSelectedEmployee={setSelectedEmployee}
       />
       <EmployeeTable
         paginatedEmployees={paginatedEmployees}
         sortField={sortField}
         sortOrder={sortOrder}
         handleSort={handleSort}
+        setIsModalOpen={setIsModalOpen}
+        setSelectedEmployee={setSelectedEmployee}
       />
       <Pagination
         totalPages={totalPages}

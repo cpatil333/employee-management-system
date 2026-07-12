@@ -1,16 +1,25 @@
 import React from "react";
 import EmployeeForm from "./EmployeeForm";
+import { Employee } from "@/app/types/empoyee.types";
 
 type EmployeeModalProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setEmployeeList: React.Dispatch<React.SetStateAction<Employee[]>>;
+  selectedEmployee: Employee | null;
 };
 
-export default function EmployeeModal({ setIsModalOpen }: EmployeeModalProps) {
+export default function EmployeeModal({
+  setIsModalOpen,
+  setEmployeeList,
+  selectedEmployee,
+}: EmployeeModalProps) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-5xl h-[90vh]">
         <div className="flex items-center justify-between border-b p-4">
-          <h2 className="text-2xl font-semibold text-blue-700">Add Employee</h2>
+          <h2 className="text-2xl font-semibold text-blue-700">
+            {selectedEmployee === null ? "Add Employee" : "Update Employee"}
+          </h2>
 
           <button
             onClick={() => setIsModalOpen(false)}
@@ -20,7 +29,11 @@ export default function EmployeeModal({ setIsModalOpen }: EmployeeModalProps) {
           </button>
         </div>
 
-        <EmployeeForm setIsModalOpen={setIsModalOpen} />
+        <EmployeeForm
+          setIsModalOpen={setIsModalOpen}
+          setEmployeeList={setEmployeeList}
+          selectedEmployee={selectedEmployee}
+        />
       </div>
     </div>
   );
