@@ -1,38 +1,35 @@
 "use client";
 import { Employee } from "@/app/types/empoyee.types";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import EmployeeTable from "../components/employee/EmployeeTable";
 import EmployeeToolbar from "../components/employee/EmployeeToolbar";
 import Pagination from "../components/employee/Pagination";
-import { employees } from "../data/employees";
-import { SortField } from "../constant/employee.constants";
 import { department } from "../data/department";
 import { designation } from "../data/designation";
+import { useEmployee } from "../hooks/useEmployee";
 
 export default function EmployeePage() {
-  const [employeeList, setEmployeeList] = useState(employees);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
-    null,
-  );
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortField, setSortField] = useState<SortField>("name");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [selectedDepartment, setSelectedDepartment] = useState(0);
-  const [selectedDesignation, setSelectedDesignation] = useState(0);
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const perPage = 5;
-  const totalPages = Math.ceil(employees.length / perPage);
+  const {
+    searchTerm,
+    currentPage,
+    setCurrentPage,
+    employeeList,
+    selectedDepartment,
+    selectedDesignation,
+    selectedStatus,
+    sortField,
+    sortOrder,
+  } = useEmployee();
+
+  console.log(employeeList);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]);
+  }, [searchTerm, setCurrentPage]);
 
-  // console.log(searchTerm);
   //filtered data
   const filteredEmployees = useMemo(() => {
-    return employeeList.filter((employee) => {
+    return employeeList.filter((employee: Employee) => {
       const matchesSearch =
         employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -63,6 +60,9 @@ export default function EmployeePage() {
     selectedDesignation,
     selectedStatus,
   ]);
+
+  const perPage = 5;
+  const totalPages = Math.ceil(filteredEmployees.length / perPage);
 
   //sorting data
   const sortedEmployees = useMemo(() => {
@@ -95,43 +95,11 @@ export default function EmployeePage() {
     return sortedEmployees.slice(startIndex, startIndex + perPage);
   }, [sortedEmployees, currentPage]);
 
-  const handleSort = (field: SortField) => {
-    console.log(field);
-    if (sortField === field) {
-      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortField(field);
-      setSortOrder("asc");
-    }
-    setCurrentPage(1);
-  };
-
   return (
     <div>
-      <EmployeeToolbar
-        setSearchTerm={setSearchTerm}
-        setSelectedDepartment={setSelectedDepartment}
-        setSelectedDesignation={setSelectedDesignation}
-        setSelectedStatus={setSelectedStatus}
-        setEmployeeList={setEmployeeList}
-        setIsModalOpen={setIsModalOpen}
-        isModalOpen={isModalOpen}
-        selectedEmployee={selectedEmployee}
-        setSelectedEmployee={setSelectedEmployee}
-      />
-      <EmployeeTable
-        paginatedEmployees={paginatedEmployees}
-        sortField={sortField}
-        sortOrder={sortOrder}
-        handleSort={handleSort}
-        setIsModalOpen={setIsModalOpen}
-        setSelectedEmployee={setSelectedEmployee}
-      />
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
+      <EmployeeToolbar />
+      <EmployeeTable paginatedEmployees={paginatedEmployees} />
+      <Pagination totalPages={totalPages} />
     </div>
   );
 }

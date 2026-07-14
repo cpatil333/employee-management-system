@@ -3,31 +3,18 @@ import React from "react";
 import { department } from "../../data/department";
 import { designation } from "../../data/designation";
 import EmployeeModal from "./EmployeeModal";
-import { Employee } from "@/app/types/empoyee.types";
+import { useEmployee } from "@/app/hooks/useEmployee";
 
-type EmployeeToolbarProps = {
-  setSearchTerm: (e: string) => void;
-  setSelectedDepartment: React.Dispatch<React.SetStateAction<number>>;
-  setSelectedDesignation: React.Dispatch<React.SetStateAction<number>>;
-  setSelectedStatus: React.Dispatch<React.SetStateAction<string>>;
-  setEmployeeList: React.Dispatch<React.SetStateAction<Employee[]>>;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isModalOpen: boolean;
-  setSelectedEmployee: React.Dispatch<React.SetStateAction<Employee | null>>;
-  selectedEmployee: Employee | null;
-};
-
-export default function EmployeeToolbar({
-  setSearchTerm,
-  setSelectedDepartment,
-  setSelectedDesignation,
-  setSelectedStatus,
-  setEmployeeList,
-  setIsModalOpen,
-  selectedEmployee,
-  setSelectedEmployee,
-  isModalOpen,
-}: EmployeeToolbarProps) {
+export default function EmployeeToolbar() {
+  const {
+    setSearchTerm,
+    isModalOpen,
+    setSelectedEmployee,
+    setIsModalOpen,
+    setSelectedDepartment,
+    setSelectedDesignation,
+    setSelectedStatus,
+  } = useEmployee();
   return (
     <div>
       <div className="flex w-full">
@@ -77,13 +64,7 @@ export default function EmployeeToolbar({
           <option value="inactive">Inactive</option>
         </select>
       </div>
-      {isModalOpen && (
-        <EmployeeModal
-          setIsModalOpen={setIsModalOpen}
-          setEmployeeList={setEmployeeList}
-          selectedEmployee={selectedEmployee}
-        />
-      )}
+      {isModalOpen && <EmployeeModal />}
     </div>
   );
 }

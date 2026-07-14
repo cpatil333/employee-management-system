@@ -1,43 +1,55 @@
 import { Employee } from "@/app/types/empoyee.types";
-import { useState } from "react";
 import DeleteEmployeeModal from "./DeleteEmployeeModal";
+import EmployeeDetailModal from "./EmployeeDetailModal";
+import { useEmployee } from "@/app/hooks/useEmployee";
 
 type ActionButtonsProps = {
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedEmployee: React.Dispatch<React.SetStateAction<Employee | null>>;
-  rowData: Employee;
+  selectedEmployee: Employee;
 };
 
 export default function ActionButtons({
-  setIsModalOpen,
-  setSelectedEmployee,
-  rowData,
+  selectedEmployee,
 }: ActionButtonsProps) {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const {
+    setIsModalOpen,
+    setSelectedEmployee,
+    employeeDetailModal,
+    setEmployeeDetailModal,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+  } = useEmployee();
+
   return (
     <div>
-      <button className="bg-blue-800 text-white p-1 m-1 w-20">👁 View</button>
+      <button
+        className="bg-blue-800 text-white p-1 m-1 w-20"
+        onClick={() => {
+          setEmployeeDetailModal(true);
+          setSelectedEmployee(selectedEmployee);
+        }}
+      >
+        👁 View
+      </button>
       <button
         className="bg-blue-800 text-white p-1 m-1 w-20"
         onClick={() => {
           setIsModalOpen(true);
-          setSelectedEmployee(rowData);
+          setSelectedEmployee(selectedEmployee);
         }}
       >
         ✏ Edit
       </button>
       <button
         className="bg-red-800 text-white p-1 m-1 w-20"
-        onClick={() => setIsDeleteModalOpen(true)}
+        onClick={() => {
+          setIsDeleteModalOpen(true);
+          setSelectedEmployee(selectedEmployee);
+        }}
       >
         🗑 Delete
       </button>
-      {isDeleteModalOpen && (
-        <DeleteEmployeeModal
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-          selectedUser={rowData}
-        />
-      )}
+      {isDeleteModalOpen && <DeleteEmployeeModal />}
+      {employeeDetailModal && <EmployeeDetailModal />}
     </div>
   );
 }

@@ -1,25 +1,15 @@
 import { Employee } from "@/app/types/empoyee.types";
 import EmployeeRow from "./EmployeeRow";
-import { SortField } from "../../constant/employee.constants";
-import React from "react";
+import { useEmployee } from "@/app/hooks/useEmployee";
 
 type EmployeeTableProps = {
   paginatedEmployees: Employee[];
-  sortField: string;
-  sortOrder: string;
-  handleSort: (field: SortField) => void;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedEmployee: React.Dispatch<React.SetStateAction<Employee | null>>;
 };
 
 export default function EmployeeTable({
   paginatedEmployees,
-  sortField,
-  sortOrder,
-  handleSort,
-  setIsModalOpen,
-  setSelectedEmployee,
 }: EmployeeTableProps) {
+  const { sortField, sortOrder, handleSort } = useEmployee();
   return (
     <div>
       <table className="w-full bg-white text-black text-[16px]">
@@ -48,12 +38,7 @@ export default function EmployeeTable({
         </thead>
         <tbody className="border">
           {paginatedEmployees.map((employee) => (
-            <EmployeeRow
-              key={employee.employeeId}
-              rowData={employee}
-              setSelectedEmployee={setSelectedEmployee}
-              setIsModalOpen={setIsModalOpen}
-            />
+            <EmployeeRow key={employee.employeeId} rowData={employee} />
           ))}
         </tbody>
       </table>

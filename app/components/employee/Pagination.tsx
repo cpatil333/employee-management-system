@@ -1,14 +1,11 @@
+import { useEmployee } from "@/app/hooks/useEmployee";
+
 type PaginationProps = {
   totalPages: number;
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export default function Pagination({
-  totalPages,
-  currentPage,
-  setCurrentPage,
-}: PaginationProps) {
+export default function Pagination({ totalPages }: PaginationProps) {
+  const { currentPage, setCurrentPage } = useEmployee();
   const handleNext = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };

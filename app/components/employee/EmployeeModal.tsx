@@ -1,18 +1,9 @@
 import React from "react";
 import EmployeeForm from "./EmployeeForm";
-import { Employee } from "@/app/types/empoyee.types";
+import { useEmployee } from "@/app/hooks/useEmployee";
 
-type EmployeeModalProps = {
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setEmployeeList: React.Dispatch<React.SetStateAction<Employee[]>>;
-  selectedEmployee: Employee | null;
-};
-
-export default function EmployeeModal({
-  setIsModalOpen,
-  setEmployeeList,
-  selectedEmployee,
-}: EmployeeModalProps) {
+export default function EmployeeModal() {
+  const { selectedEmployee, setIsModalOpen } = useEmployee();
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-5xl h-[90vh]">
@@ -29,11 +20,7 @@ export default function EmployeeModal({
           </button>
         </div>
 
-        <EmployeeForm
-          setIsModalOpen={setIsModalOpen}
-          setEmployeeList={setEmployeeList}
-          selectedEmployee={selectedEmployee}
-        />
+        <EmployeeForm />
       </div>
     </div>
   );

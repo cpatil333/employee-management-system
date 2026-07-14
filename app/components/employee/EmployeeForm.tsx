@@ -8,18 +8,17 @@ import { states } from "@/app/data/states";
 import { type State } from "../../types/state.types";
 import { City } from "@/app/types/city.types";
 import { cities } from "@/app/data/cities";
+import { useEmployee } from "@/app/hooks/useEmployee";
 
-type EmployeeFormProps = {
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setEmployeeList: React.Dispatch<React.SetStateAction<Employee[]>>;
-  selectedEmployee: Employee | null;
-};
+export default function EmployeeForm() {
+  const {
+    addEmployee,
+    updateEmployee,
+    setIsModalOpen,
+    setEmployeeList,
+    selectedEmployee,
+  } = useEmployee();
 
-export default function EmployeeForm({
-  setIsModalOpen,
-  setEmployeeList,
-  selectedEmployee,
-}: EmployeeFormProps) {
   const {
     register,
     handleSubmit,
@@ -55,7 +54,6 @@ export default function EmployeeForm({
   const [selectedCityId, setSelectedCityId] = useState(0);
   const [filteredCities, setFilteredCities] = useState<City[]>([]);
 
-  console.log(selectedEmployee);
   //if got exist data then display for update
   useEffect(() => {
     if (selectedEmployee) {
@@ -67,47 +65,11 @@ export default function EmployeeForm({
   }, [selectedEmployee, reset]);
 
   const onSubmit = (data: Employee) => {
-    console.log(data);
-    try {
-      if (selectedEmployee) {
-        const updatedEmployee: Employee = {
-          ...data,
-          departmentId: Number(data.departmentId),
-          designationId: Number(data.designationId),
-
-          country: Number(data.country),
-          state: Number(data.state),
-          city: Number(data.city),
-        };
-        setEmployeeList((prevState) =>
-          prevState.map((emp) =>
-            emp.employeeId === updatedEmployee.employeeId
-              ? updatedEmployee
-              : emp,
-          ),
-        );
-      } else {
-        const employee: Employee = {
-          ...data,
-          employeeId: Date.now(),
-
-          departmentId: Number(data.departmentId),
-          designationId: Number(data.designationId),
-
-          country: Number(data.country),
-          state: Number(data.state),
-          city: Number(data.city),
-        };
-        setEmployeeList((prev) => [...prev, employee]);
-      }
+    if (selectedEmployee) {
+      updateEmployee(data);
       reset();
-      setIsModalOpen(false);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      } else {
-        console.log("Something went wrong!");
-      }
+    } else {
+      addEmployee(data);
     }
   };
 
