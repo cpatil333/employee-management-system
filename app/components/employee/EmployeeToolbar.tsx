@@ -23,19 +23,19 @@ export default function EmployeeToolbar() {
             setSelectedEmployee(null);
             setIsModalOpen(true);
           }}
-          className="w-50 bg-blue-700 p-1 m-5 rounded-xl text-white"
+          className="w-40 bg-blue-700 p-1 m-5 rounded-xl text-white"
         >
           Add Employee
         </button>
         <input
           type="text"
           placeholder="Search here.."
-          className="w-150 m-5 p-2 bg-white text-black rounded-xl"
+          className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <select
           onChange={(e) => setSelectedDepartment(Number(e.target.value))}
-          className="w-70 m-5 p-2 bg-white text-black rounded-xl"
+          className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
         >
           <option value="select">select Department</option>
           {department.map((dept) => (
@@ -46,7 +46,7 @@ export default function EmployeeToolbar() {
         </select>
         <select
           onChange={(e) => setSelectedDesignation(Number(e.target.value))}
-          className="w-70 m-5 p-2 bg-white text-black rounded-xl"
+          className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
         >
           <option value="select">select Designation</option>
           {designation.map((desg) => (
@@ -57,7 +57,7 @@ export default function EmployeeToolbar() {
         </select>
         <select
           onChange={(e) => setSelectedStatus(e.target.value)}
-          className="w-70 m-5 p-2 bg-white text-black rounded-xl"
+          className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
         >
           <option value="select">select Status</option>
           <option value="active">Active</option>

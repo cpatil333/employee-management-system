@@ -12,7 +12,7 @@ export default function EmployeeTable({
   const { sortField, sortOrder, handleSort } = useEmployee();
   return (
     <div>
-      <table className="w-full bg-white text-black text-[16px]">
+      <table className="w-6xl bg-white text-black text-[16px]">
         <thead>
           <tr className="bg-black text-white border-2">
             <th onClick={() => handleSort("name")}>
