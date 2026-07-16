@@ -4,20 +4,22 @@ import { Employee } from "@/app/types/empoyee.types";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { countries } from "../../data/countries";
-import { states } from "@/app/data/states";
-import { type State } from "../../types/state.types";
-import { City } from "@/app/types/city.types";
-import { cities } from "@/app/data/cities";
-import { useEmployee } from "@/app/hooks/useEmployee";
+import { useAppSelector } from "@/app/hooks/useAppSelector";
+import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import {
+  addEmployee,
+  setIsModalOpen,
+  setSelectedCountry,
+  setSelectedState,
+  updateEmployee,
+} from "@/app/features/employee/employeeSlice";
 
 export default function EmployeeForm() {
-  const {
-    addEmployee,
-    updateEmployee,
-    setIsModalOpen,
-    setEmployeeList,
-    selectedEmployee,
-  } = useEmployee();
+  const dispatch = useAppDispatch();
+
+  const selectedEmployee = useAppSelector(
+    (state) => state.employee.selectedEmployee,
+  );
 
   const {
     register,
@@ -48,58 +50,41 @@ export default function EmployeeForm() {
 
   const [selectedDepartment, setSelecteDepartment] = useState(0);
   const [selectedDesignation, setSelectedDesignation] = useState(0);
-  const [selectedCountry, setSelectedCountry] = useState(0);
-  const [filteredStates, setFilteredStates] = useState<State[]>([]);
-  const [selectedStateId, setSelectedStateId] = useState(0);
-  const [selectedCityId, setSelectedCityId] = useState(0);
-  const [filteredCities, setFilteredCities] = useState<City[]>([]);
 
-  //if got exist data then display for update
   useEffect(() => {
     if (selectedEmployee) {
       reset(selectedEmployee);
-
       handleCountry(selectedEmployee.country);
-      handleState(selectedEmployee.state);
+      handleState(selectedEmployee?.state);
     }
   }, [selectedEmployee, reset]);
 
   const onSubmit = (data: Employee) => {
     if (selectedEmployee) {
-      updateEmployee(data);
+      dispatch(updateEmployee(data));
       reset();
     } else {
-      addEmployee(data);
+      dispatch(addEmployee(data));
     }
+    dispatch(setIsModalOpen(false));
   };
+
+  const filteredStates = useAppSelector(
+    (state) => state.employee.selectFilteredStates ?? [],
+  );
 
   //fill State dropdown list
   const handleCountry = (countryId: number) => {
-    setFilteredStates(
-      states.filter((state) => {
-        return state.countryId === Number(countryId);
-      }),
-    );
-
-    setSelectedCountry(countryId);
-
-    // Reset dependent dropdowns
-    setSelectedStateId(0);
-    setSelectedCityId(0);
-    setFilteredCities([]);
+    dispatch(setSelectedCountry(countryId));
   };
+
+  const filteredCities = useAppSelector(
+    (state) => state.employee.selectFilteredCities ?? [],
+  );
 
   //fill city dropdown list
   const handleState = (stateId: number) => {
-    setFilteredCities(
-      cities.filter((city) => {
-        return city.stateId === Number(stateId);
-      }),
-    );
-    setSelectedStateId(stateId);
-
-    // Reset selected city
-    setSelectedCityId(0);
+    dispatch(setSelectedState(stateId));
   };
 
   return (
@@ -323,7 +308,6 @@ export default function EmployeeForm() {
             <label className="font-bold">Country : </label>
             <select
               className="border-2 w-50 outline-none p-1 m-1"
-              value={selectedCountry}
               {...register("country", {
                 required: "Country is required",
                 onChange: (e) => {
@@ -346,7 +330,6 @@ export default function EmployeeForm() {
             <label className="font-bold">State : </label>
             <select
               className="border-2 w-50 outline-none p-1 m-1"
-              value={selectedStateId}
               {...register("state", {
                 required: "State is required",
                 onChange: (e) => {
@@ -369,12 +352,8 @@ export default function EmployeeForm() {
             <label className="font-bold">City : </label>
             <select
               className="border-2 w-50 outline-none p-1 m-1"
-              value={selectedCityId}
               {...register("city", {
                 required: "City is required",
-                onChange: (e) => {
-                  setSelectedCityId(e.target.value);
-                },
               })}
             >
               <option value={0}>Select</option>
@@ -405,7 +384,7 @@ export default function EmployeeForm() {
         </div>
         <div className="text-center justify-center">
           <button
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => dispatch(setIsModalOpen(false))}
             type="button"
             className="bg-blue-700 text-xl text-white p-2 m-2"
           >

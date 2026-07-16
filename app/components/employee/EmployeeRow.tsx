@@ -20,7 +20,7 @@ export default function EmployeeRow({ rowData }: EmployeeRowProps) {
       </td>
       <td>{rowData.status === "Active" ? "🟢 Active" : "🔴 Inactive"}</td>
       <td>
-        <ActionButtons selectedEmployee={rowData} />
+        <ActionButtons employeeId={rowData.employeeId} />
       </td>
     </tr>
   );

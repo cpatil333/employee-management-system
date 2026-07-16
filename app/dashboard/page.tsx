@@ -1,10 +1,13 @@
 "use client";
 import { useMemo } from "react";
-//import { dashboard } from "../data/dashboard";
-import { useEmployee } from "../hooks/useEmployee";
+import { useAppSelector } from "../hooks/useAppSelector";
+import { RootState } from "../store/store";
 
 export default function DashboardPage() {
-  const { employeeList } = useEmployee();
+  const employeeList = useAppSelector(
+    (state: RootState) => state.employee.employeeList,
+  );
+
   const dashboard = useMemo(() => {
     return [
       { title: "Total Employees", value: employeeList.length },

@@ -1,16 +1,29 @@
-import { useEmployee } from "@/app/hooks/useEmployee";
+import { useEffect } from "react";
+import { selectTotalPages } from "../../features/employee/employeeSelectors";
+import { useAppSelector } from "@/app/hooks/useAppSelector";
+import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import {
+  nextPage,
+  previousPage,
+  setCurrentPage,
+} from "@/app/features/employee/employeeSlice";
 
-type PaginationProps = {
-  totalPages: number;
-};
+export default function Pagination() {
+  const dispatch = useAppDispatch();
 
-export default function Pagination({ totalPages }: PaginationProps) {
-  const { currentPage, setCurrentPage } = useEmployee();
+  const currentPage = useAppSelector((state) => state.employee.currentPage);
+  const totalPages = useAppSelector(selectTotalPages);
+
+  useEffect(() => {
+    dispatch(setCurrentPage(1));
+  }, [dispatch]);
+
   const handleNext = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    dispatch(nextPage());
   };
+
   const handlePrevious = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    dispatch(previousPage());
   };
 
   return (

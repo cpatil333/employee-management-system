@@ -1,15 +1,28 @@
-import { Employee } from "@/app/types/empoyee.types";
 import EmployeeRow from "./EmployeeRow";
-import { useEmployee } from "@/app/hooks/useEmployee";
+import { useState } from "react";
+import { SortField } from "@/app/constant/employee.constants";
+import { selectPaginatedEmployees } from "../../features/employee/employeeSelectors";
+import { useAppSelector } from "@/app/hooks/useAppSelector";
+import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import { setCurrentPage } from "@/app/features/employee/employeeSlice";
 
-type EmployeeTableProps = {
-  paginatedEmployees: Employee[];
-};
+export default function EmployeeTable() {
+  const dispatch = useAppDispatch();
+  const [sortField, setSortField] = useState<SortField>("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-export default function EmployeeTable({
-  paginatedEmployees,
-}: EmployeeTableProps) {
-  const { sortField, sortOrder, handleSort } = useEmployee();
+  const paginatedEmployees = useAppSelector(selectPaginatedEmployees);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+    dispatch(setCurrentPage(1));
+  };
+
   return (
     <div>
       <table className="w-6xl bg-white text-black text-[16px]">

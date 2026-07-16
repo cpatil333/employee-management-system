@@ -1,9 +1,9 @@
-import { useEmployee } from "@/app/hooks/useEmployee";
+//import { useEmployee } from "@/app/hooks/useEmployee";
 
 export default function DeleteEmployeeModal() {
-  const { setIsDeleteModalOpen, deleteEmployee, selectedEmployee } =
-    useEmployee();
-  console.log(selectedEmployee);
+  // const { setIsDeleteModalOpen, deleteEmployee, selectedEmployee } =
+  //   useEmployee();
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-xl w-100 max-w-5xl h-[30vh]">
@@ -12,7 +12,7 @@ export default function DeleteEmployeeModal() {
             Delete Employee
           </h2>
           <button
-            onClick={() => setIsDeleteModalOpen(false)}
+            // onClick={() => setIsDeleteModalOpen(false)}
             className="text-2xl font-bold text-red-600 hover:text-red-800"
           >
             ✕
@@ -20,18 +20,18 @@ export default function DeleteEmployeeModal() {
         </div>
         <div className="max-w-xl mt-10 ml-10">
           Are you sure you want to delete
-          <strong> {selectedEmployee?.name}</strong>?
+          {/* <strong> {selectedEmployee?.name}</strong>? */}
           <div>
             <button
               className="bg-blue-700 text-xl text-white p-2 m-2"
-              onClick={() => setIsDeleteModalOpen(false)}
+              // onClick={() => setIsDeleteModalOpen(false)}
             >
               Cancel
             </button>
             <button
               className="bg-red-700 text-xl text-white p-2 m-2"
               onClick={() =>
-                deleteEmployee(Number(selectedEmployee?.employeeId))
+                // deleteEmployee(Number(selectedEmployee?.employeeId))
               }
             >
               Delete

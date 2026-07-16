@@ -1,25 +1,27 @@
 "use client";
 import { Employee } from "@/app/types/empoyee.types";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import EmployeeTable from "../components/employee/EmployeeTable";
 import EmployeeToolbar from "../components/employee/EmployeeToolbar";
 import Pagination from "../components/employee/Pagination";
 import { department } from "../data/department";
 import { designation } from "../data/designation";
-import { useEmployee } from "../hooks/useEmployee";
+import { useAppSelector } from "../hooks/useAppSelector";
+import { RootState } from "../store/store";
+import { SortField } from "../constant/employee.constants";
 
 export default function EmployeePage() {
-  const {
-    searchTerm,
-    currentPage,
-    setCurrentPage,
-    employeeList,
-    selectedDepartment,
-    selectedDesignation,
-    selectedStatus,
-    sortField,
-    sortOrder,
-  } = useEmployee();
+  const employeeList = useAppSelector(
+    (state: RootState) => state.employee.employeeList,
+  );
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortField, setSortField] = useState<SortField>("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [selectedDepartment, setSelectedDepartment] = useState(0);
+  const [selectedDesignation, setSelectedDesignation] = useState(0);
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   console.log(employeeList);
 
@@ -98,8 +100,8 @@ export default function EmployeePage() {
   return (
     <div>
       <EmployeeToolbar />
-      <EmployeeTable paginatedEmployees={paginatedEmployees} />
-      <Pagination totalPages={totalPages} />
+      <EmployeeTable />
+      <Pagination />
     </div>
   );
 }

@@ -3,10 +3,9 @@ import { countries } from "@/app/data/countries";
 import { department } from "@/app/data/department";
 import { designation } from "@/app/data/designation";
 import { states } from "@/app/data/states";
-import { useEmployee } from "@/app/hooks/useEmployee";
 
 export default function EmployeeDetailModal() {
-  const { setEmployeeDetailModal, selectedEmployee } = useEmployee();
+  //const { setEmployeeDetailModal, selectedEmployee } = useEmployee();
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -17,7 +16,7 @@ export default function EmployeeDetailModal() {
           </h2>
         </div>
         <div className="flex flex-col ml-20 mt-5 font-semibold text-xl p-2">
-          <DetailRows label="Name" value={selectedEmployee?.name} />
+          {/* <DetailRows label="Name" value={selectedEmployee?.name} />
           <DetailRows label="Email" value={selectedEmployee?.email} />
           <DetailRows label="Phone" value={selectedEmployee?.phone} />
           <DetailRows
@@ -34,67 +33,14 @@ export default function EmployeeDetailModal() {
                 ?.name ?? ""
             }
           />
-          <DetailRows
-            label="Status"
-            value={
-              selectedEmployee?.status === "Active"
-                ? "🟢 Active"
-                : "🔴 Inactive"
-            }
-          />
-          <DetailRows
-            label="Joining Date"
-            value={
-              selectedEmployee?.joiningDate
-                ? new Date(selectedEmployee?.joiningDate).toLocaleDateString(
-                    "en-GB",
-                    {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    },
-                  )
-                : ""
-            }
-          />
-          <DetailRows
-            label="Salary"
-            value={selectedEmployee?.salary.toLocaleString("en-IN")}
-          />
-          <DetailRows
-            label="Marital Status"
-            value={selectedEmployee?.maritalStatus}
-          />
-          <DetailRows label="Address1" value={selectedEmployee?.address1} />
-          <DetailRows label="Address2" value={selectedEmployee?.address2} />
-          <DetailRows
-            label="Country"
-            value={
-              countries.find((d) => d.id === selectedEmployee?.country)?.name ??
-              ""
-            }
-          />
-          <DetailRows
-            label="State"
-            value={
-              states.find((d) => d.id === selectedEmployee?.state)?.name ?? ""
-            }
-          />
-          <DetailRows
-            label="City"
-            value={
-              cities.find((d) => d.id === selectedEmployee?.city)?.name ?? ""
-            }
-          />
-          <DetailRows label="Pincode" value={selectedEmployee?.pincode} />
-        </div>
-        <div className="w-full flex items-center justify-center">
+           */}
+          {/* <div className="w-full flex items-center justify-center">
           <button
             className="bg-blue-700 text-xl text-white p-2 m-2"
             onClick={() => setEmployeeDetailModal(false)}
           >
             Close
-          </button>
+          </button>*/}
         </div>
       </div>
     </div>
@@ -102,7 +48,8 @@ export default function EmployeeDetailModal() {
 }
 
 //Calling row per lable and values for display
-type DetailRowProps = {
+{
+  /* type DetailRowProps = {
   label: string;
   value: React.ReactNode;
 };
@@ -114,4 +61,5 @@ function DetailRows({ label, value }: DetailRowProps) {
       <span>{value}</span>
     </div>
   );
+} */
 }

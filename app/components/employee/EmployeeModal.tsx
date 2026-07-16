@@ -1,9 +1,14 @@
-import React from "react";
 import EmployeeForm from "./EmployeeForm";
-import { useEmployee } from "@/app/hooks/useEmployee";
+import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import { setIsModalOpen } from "@/app/features/employee/employeeSlice";
+import { useAppSelector } from "@/app/hooks/useAppSelector";
 
 export default function EmployeeModal() {
-  const { selectedEmployee, setIsModalOpen } = useEmployee();
+  const dispatch = useAppDispatch();
+
+  const selectedEmployee = useAppSelector(
+    (state) => state.employee.selectedEmployee,
+  );
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-5xl h-[90vh]">
@@ -13,7 +18,7 @@ export default function EmployeeModal() {
           </h2>
 
           <button
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => dispatch(setIsModalOpen(false))}
             className="text-2xl font-bold text-red-600 hover:text-red-800"
           >
             ✕

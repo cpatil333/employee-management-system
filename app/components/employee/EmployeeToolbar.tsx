@@ -1,27 +1,30 @@
 "use client";
-import React from "react";
+
 import { department } from "../../data/department";
 import { designation } from "../../data/designation";
 import EmployeeModal from "./EmployeeModal";
-import { useEmployee } from "@/app/hooks/useEmployee";
+import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import {
+  setIsModalOpen,
+  setSearchTerm,
+  setSelectedDepartment,
+  setSelectedDesignation,
+  setSelectedEmployee,
+  setSelectedStatus,
+} from "@/app/features/employee/employeeSlice";
+import { useAppSelector } from "@/app/hooks/useAppSelector";
 
 export default function EmployeeToolbar() {
-  const {
-    setSearchTerm,
-    isModalOpen,
-    setSelectedEmployee,
-    setIsModalOpen,
-    setSelectedDepartment,
-    setSelectedDesignation,
-    setSelectedStatus,
-  } = useEmployee();
+  const dispatch = useAppDispatch();
+  const isModalOpen = useAppSelector((state) => state.employee.isModalOpen);
+
   return (
     <div>
       <div className="flex w-full">
         <button
           onClick={() => {
-            setSelectedEmployee(null);
-            setIsModalOpen(true);
+            dispatch(setSelectedEmployee(null));
+            dispatch(setIsModalOpen(true));
           }}
           className="w-40 bg-blue-700 p-1 m-5 rounded-xl text-white"
         >
@@ -31,10 +34,12 @@ export default function EmployeeToolbar() {
           type="text"
           placeholder="Search here.."
           className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => dispatch(setSearchTerm(e.target.value))}
         />
         <select
-          onChange={(e) => setSelectedDepartment(Number(e.target.value))}
+          onChange={(e) =>
+            dispatch(setSelectedDepartment(Number(e.target.value)))
+          }
           className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
         >
           <option value="select">select Department</option>
@@ -45,7 +50,9 @@ export default function EmployeeToolbar() {
           ))}
         </select>
         <select
-          onChange={(e) => setSelectedDesignation(Number(e.target.value))}
+          onChange={(e) =>
+            dispatch(setSelectedDesignation(Number(e.target.value)))
+          }
           className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
         >
           <option value="select">select Designation</option>
@@ -56,7 +63,7 @@ export default function EmployeeToolbar() {
           ))}
         </select>
         <select
-          onChange={(e) => setSelectedStatus(e.target.value)}
+          onChange={(e) => dispatch(setSelectedStatus(e.target.value))}
           className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
         >
           <option value="select">select Status</option>
