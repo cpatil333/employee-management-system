@@ -1,8 +1,16 @@
-//import { useEmployee } from "@/app/hooks/useEmployee";
+import {
+  deleteEmployee,
+  setIsDeleteModalOpen,
+} from "@/app/features/employee/employeeSlice";
+import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import { useAppSelector } from "@/app/hooks/useAppSelector";
 
 export default function DeleteEmployeeModal() {
-  // const { setIsDeleteModalOpen, deleteEmployee, selectedEmployee } =
-  //   useEmployee();
+  const dispatch = useAppDispatch();
+
+  const selectedEmployee = useAppSelector(
+    (state) => state.employee.selectedEmployee,
+  );
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -12,7 +20,7 @@ export default function DeleteEmployeeModal() {
             Delete Employee
           </h2>
           <button
-            // onClick={() => setIsDeleteModalOpen(false)}
+            onClick={() => dispatch(setIsDeleteModalOpen(false))}
             className="text-2xl font-bold text-red-600 hover:text-red-800"
           >
             ✕
@@ -20,19 +28,20 @@ export default function DeleteEmployeeModal() {
         </div>
         <div className="max-w-xl mt-10 ml-10">
           Are you sure you want to delete
-          {/* <strong> {selectedEmployee?.name}</strong>? */}
+          <strong> {selectedEmployee?.name}</strong>?
           <div>
             <button
               className="bg-blue-700 text-xl text-white p-2 m-2"
-              // onClick={() => setIsDeleteModalOpen(false)}
+              onClick={() => dispatch(setIsDeleteModalOpen(false))}
             >
               Cancel
             </button>
             <button
               className="bg-red-700 text-xl text-white p-2 m-2"
-              onClick={() =>
-                // deleteEmployee(Number(selectedEmployee?.employeeId))
-              }
+              onClick={() => {
+                dispatch(deleteEmployee(Number(selectedEmployee?.employeeId)));
+                dispatch(setIsDeleteModalOpen(false));
+              }}
             >
               Delete
             </button>

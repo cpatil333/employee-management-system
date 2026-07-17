@@ -26,6 +26,8 @@ type EmployeeState = {
   selectedCity: number;
   selectFilteredStates: State[] | null;
   selectFilteredCities: City[] | null;
+  employeeDetailModal: boolean;
+  isDeleteModalOpen: boolean;
 };
 
 const initialState: EmployeeState = {
@@ -47,6 +49,8 @@ const initialState: EmployeeState = {
   selectedCity: 0,
   selectFilteredStates: null,
   selectFilteredCities: null,
+  employeeDetailModal: false,
+  isDeleteModalOpen: false,
 };
 
 export const EmployeeSlice = createSlice({
@@ -102,18 +106,19 @@ export const EmployeeSlice = createSlice({
       state.employeeList.push(employee);
     },
     updateEmployee(state, action) {
-      const updateEmployee: Employee = {
-        ...action.payload,
-        employeeId: Date.now(),
-        departmentId: Number(action.payload.departmentId),
-        designationId: Number(action.payload.designationId),
-
-        country: Number(action.payload.country),
-        state: Number(action.payload.state),
-        city: Number(action.payload.city),
-      };
       state.employeeList = state.employeeList.map((emp) =>
-        emp.employeeId === updateEmployee.employeeId ? updateEmployee : emp,
+        emp.employeeId === action.payload.employeeId
+          ? {
+              ...action.payload,
+
+              departmentId: Number(action.payload.departmentId),
+              designationId: Number(action.payload.designationId),
+
+              country: Number(action.payload.country),
+              state: Number(action.payload.state),
+              city: Number(action.payload.city),
+            }
+          : emp,
       );
     },
     deleteEmployee(state, action) {
@@ -130,6 +135,12 @@ export const EmployeeSlice = createSlice({
       state.selectFilteredCities = cities.filter(
         (state) => state.stateId === Number(action.payload),
       );
+    },
+    setEmployeeDetailModal(state, action) {
+      state.employeeDetailModal = action.payload;
+    },
+    setIsDeleteModalOpen(state, action) {
+      state.isDeleteModalOpen = action.payload;
     },
   },
 });
@@ -150,5 +161,7 @@ export const {
   deleteEmployee,
   setSelectedCountry,
   setSelectedState,
+  setEmployeeDetailModal,
+  setIsDeleteModalOpen,
 } = EmployeeSlice.actions;
 export default EmployeeSlice.reducer;

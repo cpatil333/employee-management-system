@@ -1,11 +1,13 @@
-import { Employee } from "@/app/types/empoyee.types";
 import DeleteEmployeeModal from "./DeleteEmployeeModal";
 import EmployeeDetailModal from "./EmployeeDetailModal";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import {
   setIsModalOpen,
   setSelectedEmployee,
+  setEmployeeDetailModal,
+  setIsDeleteModalOpen,
 } from "@/app/features/employee/employeeSlice";
+import { useAppSelector } from "@/app/hooks/useAppSelector";
 
 type ActionButtonsProps = {
   employeeId: number;
@@ -14,19 +16,32 @@ type ActionButtonsProps = {
 export default function ActionButtons({ employeeId }: ActionButtonsProps) {
   const dispatch = useAppDispatch();
 
+  const isDeleteModalOpen = useAppSelector(
+    (state) => state.employee.isDeleteModalOpen,
+  );
+  const employeeDetailModal = useAppSelector(
+    (state) => state.employee.employeeDetailModal,
+  );
   const handleEdit = () => {
     dispatch(setSelectedEmployee(employeeId));
     dispatch(setIsModalOpen(true));
+  };
+
+  const handleView = () => {
+    dispatch(setEmployeeDetailModal(true));
+    dispatch(setSelectedEmployee(employeeId));
+  };
+
+  const handleDelete = () => {
+    dispatch(setIsDeleteModalOpen(true));
+    dispatch(setSelectedEmployee(employeeId));
   };
 
   return (
     <div>
       <button
         className="bg-blue-800 text-white p-1 m-1 w-20"
-        onClick={() => {
-          // setEmployeeDetailModal(true);
-          // setSelectedEmployee(selectedEmployee);
-        }}
+        onClick={handleView}
       >
         👁 View
       </button>
@@ -38,15 +53,12 @@ export default function ActionButtons({ employeeId }: ActionButtonsProps) {
       </button>
       <button
         className="bg-red-800 text-white p-1 m-1 w-20"
-        onClick={() => {
-          // setIsDeleteModalOpen(true);
-          // setSelectedEmployee(selectedEmployee);
-        }}
+        onClick={handleDelete}
       >
         🗑 Delete
       </button>
-      {/* {isDeleteModalOpen && <DeleteEmployeeModal />}
-      {employeeDetailModal && <EmployeeDetailModal />} */}
+      {isDeleteModalOpen && <DeleteEmployeeModal />}
+      {employeeDetailModal && <EmployeeDetailModal />}
     </div>
   );
 }
