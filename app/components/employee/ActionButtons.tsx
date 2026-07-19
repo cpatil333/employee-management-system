@@ -40,19 +40,19 @@ export default function ActionButtons({ employeeId }: ActionButtonsProps) {
   return (
     <div>
       <button
-        className="bg-blue-800 text-white p-1 m-1 w-20"
+        className="bg-blue-600 hover:bg-blue-700 text-white p-1 round m-1 w-20"
         onClick={handleView}
       >
         👁 View
       </button>
       <button
-        className="bg-blue-800 text-white p-1 m-1 w-20"
+        className="bg-green-600 hover:bg-green-700 text-white p-1 m-1 w-20"
         onClick={handleEdit}
       >
         ✏ Edit
       </button>
       <button
-        className="bg-red-800 text-white p-1 m-1 w-20"
+        className="bg-red-600 hover:bg-red-700 text-white p-1 m-1 w-20"
         onClick={handleDelete}
       >
         🗑 Delete

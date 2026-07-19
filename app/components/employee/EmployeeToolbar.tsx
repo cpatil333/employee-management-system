@@ -20,7 +20,7 @@ export default function EmployeeToolbar() {
 
   return (
     <div>
-      <div className="flex w-full">
+      <div className="flex flex-wrap gap-4 items-center mb-6">
         <button
           onClick={() => {
             dispatch(setSelectedEmployee(null));
@@ -33,14 +33,14 @@ export default function EmployeeToolbar() {
         <input
           type="text"
           placeholder="Search here.."
-          className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
+          className="bg-white text-black rounded-lg px-4 py-2"
           onChange={(e) => dispatch(setSearchTerm(e.target.value))}
         />
         <select
           onChange={(e) =>
             dispatch(setSelectedDepartment(Number(e.target.value)))
           }
-          className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
+          className="bg-white text-black rounded-lg px-4 py-2"
         >
           <option value="select">select Department</option>
           {department.map((dept) => (
@@ -53,7 +53,7 @@ export default function EmployeeToolbar() {
           onChange={(e) =>
             dispatch(setSelectedDesignation(Number(e.target.value)))
           }
-          className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
+          className="bg-white text-black rounded-lg px-4 py-2"
         >
           <option value="select">select Designation</option>
           {designation.map((desg) => (
@@ -64,7 +64,7 @@ export default function EmployeeToolbar() {
         </select>
         <select
           onChange={(e) => dispatch(setSelectedStatus(e.target.value))}
-          className="w-1xl m-5 p-2 bg-white text-black rounded-xl"
+          className="bg-white text-black rounded-lg px-4 py-2"
         >
           <option value="select">select Status</option>
           <option value="active">Active</option>

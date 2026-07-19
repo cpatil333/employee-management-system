@@ -24,9 +24,9 @@ export default function EmployeeTable() {
   };
 
   return (
-    <div>
+    <div className="bg-white rounded-xl shadow-lg overflow-x-auto">
       <table className="w-6xl bg-white text-black text-[16px]">
-        <thead>
+        <thead className="bg-blue-950 text-white">
           <tr className="bg-black text-white border-2">
             <th onClick={() => handleSort("name")}>
               Name {sortField === "name" && (sortOrder === "asc" ? "▲" : "▼")}
@@ -49,7 +49,7 @@ export default function EmployeeTable() {
             <th>Action</th>
           </tr>
         </thead>
-        <tbody className="border">
+        <tbody className="divide-y divide-gray-200">
           {paginatedEmployees.map((employee) => (
             <EmployeeRow key={employee.employeeId} rowData={employee} />
           ))}

@@ -1,14 +1,16 @@
-//import LoginPage from "./login/page";
-
 import DashboardPage from "./dashboard/page";
 import EmployeePage from "./employees/page";
+import Sidebar from "./sidebar/Sidebar";
 
 export default function Home() {
   return (
-    <div>
+    <div className="flex min-h-screen bg-black">
       {/* <LoginPage /> */}
-      <DashboardPage />
-      <EmployeePage />
+      <Sidebar />
+      <main className="flex-1 p-6 overflow-auto">
+        <DashboardPage />
+        <EmployeePage />
+      </main>
     </div>
   );
 }
