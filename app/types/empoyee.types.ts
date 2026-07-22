@@ -8,10 +8,11 @@ export type Employee = {
   phone: string;
   address1: string;
   address2: string;
-  country: number;
-  state: number;
-  city: number;
+  countryId: number;
+  stateId: number;
+  cityId: number;
   pincode: string;
+  profileImage: FileList;
   joiningDate: string;
   salary: number;
   gender: "Male" | "Female";

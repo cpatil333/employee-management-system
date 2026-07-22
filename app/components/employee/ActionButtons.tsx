@@ -1,13 +1,13 @@
 import DeleteEmployeeModal from "./DeleteEmployeeModal";
 import EmployeeDetailModal from "./EmployeeDetailModal";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import { useAppSelector } from "@/app/hooks/useAppSelector";
 import {
-  setIsModalOpen,
-  setSelectedEmployee,
+  fetchEmployeeById,
   setEmployeeDetailModal,
   setIsDeleteModalOpen,
+  setIsModalOpen,
 } from "@/app/features/employee/employeeSlice";
-import { useAppSelector } from "@/app/hooks/useAppSelector";
 
 type ActionButtonsProps = {
   employeeId: number;
@@ -19,22 +19,26 @@ export default function ActionButtons({ employeeId }: ActionButtonsProps) {
   const isDeleteModalOpen = useAppSelector(
     (state) => state.employee.isDeleteModalOpen,
   );
+
   const employeeDetailModal = useAppSelector(
     (state) => state.employee.employeeDetailModal,
   );
+
   const handleEdit = () => {
-    dispatch(setSelectedEmployee(employeeId));
+    dispatch(fetchEmployeeById(employeeId));
     dispatch(setIsModalOpen(true));
   };
 
   const handleView = () => {
     dispatch(setEmployeeDetailModal(true));
-    dispatch(setSelectedEmployee(employeeId));
+    //dispatch(setSelectedEmployee(employeeId));
+    dispatch(fetchEmployeeById(employeeId));
   };
 
   const handleDelete = () => {
     dispatch(setIsDeleteModalOpen(true));
-    dispatch(setSelectedEmployee(employeeId));
+    dispatch(fetchEmployeeById(employeeId));
+    //dispatch(setSelectedEmployee(employeeId));
   };
 
   return (

@@ -7,9 +7,9 @@ import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { setCurrentPage } from "@/app/features/employee/employeeSlice";
 
 export default function EmployeeTable() {
-  const dispatch = useAppDispatch();
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const dispatch = useAppDispatch();
 
   const paginatedEmployees = useAppSelector(selectPaginatedEmployees);
 

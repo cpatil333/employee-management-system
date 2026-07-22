@@ -16,6 +16,7 @@ import { useAppSelector } from "@/app/hooks/useAppSelector";
 
 export default function EmployeeToolbar() {
   const dispatch = useAppDispatch();
+
   const isModalOpen = useAppSelector((state) => state.employee.isModalOpen);
 
   return (

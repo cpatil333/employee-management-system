@@ -4,5 +4,5 @@ export const menuItems = [
   { id: 3, icon: "🏢", title: "Departments", path: "/reports" },
   { id: 4, icon: "💼", title: "Designations", path: "/notifications" },
   { id: 5, icon: "⚙️", title: "Settings", path: "/settings" },
-  { id: 5, icon: "🚪", title: "Logout", path: "/settings" },
+  { id: 6, icon: "🚪", title: "Logout", path: "/logout" },
 ];

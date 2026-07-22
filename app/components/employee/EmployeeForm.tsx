@@ -1,26 +1,22 @@
-import { department } from "@/app/data/department";
-import { designation } from "@/app/data/designation";
 import { Employee } from "@/app/types/empoyee.types";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { countries } from "../../data/countries";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import {
-  addEmployee,
+  addEmployeeAsync,
+  fetchCitiesByStateId,
+  fetchCounties,
+  fetchDepartments,
+  fetchDesignations,
+  fetchEmployees,
+  fetchStatesByCountryId,
   setIsModalOpen,
-  setSelectedCountry,
-  setSelectedState,
-  updateEmployee,
+  updateEmployeeAsync,
 } from "@/app/features/employee/employeeSlice";
 
 export default function EmployeeForm() {
   const dispatch = useAppDispatch();
-
-  const selectedEmployee = useAppSelector(
-    (state) => state.employee.selectedEmployee,
-  );
-
   const {
     register,
     handleSubmit,
@@ -37,10 +33,11 @@ export default function EmployeeForm() {
       phone: "",
       address1: "",
       address2: "",
-      country: 0,
-      state: 0,
-      city: 0,
+      countryId: 0,
+      stateId: 0,
+      cityId: 0,
       pincode: "",
+      profileImage: undefined,
       joiningDate: "",
       salary: 0,
       gender: "Male",
@@ -50,41 +47,112 @@ export default function EmployeeForm() {
 
   const [selectedDepartment, setSelecteDepartment] = useState(0);
   const [selectedDesignation, setSelectedDesignation] = useState(0);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState(0);
+  const [selectedStateId, setSelectedStateId] = useState(0);
+  const [selectedCityId, setSelectedCityId] = useState(0);
+
+  useEffect(() => {
+    dispatch(fetchDepartments());
+    dispatch(fetchDesignations());
+    dispatch(fetchCounties());
+  }, [dispatch]);
+
+  const selectedEmployee = useAppSelector(
+    (state) => state.employee.selectedEmployee,
+  );
 
   useEffect(() => {
     if (selectedEmployee) {
-      reset(selectedEmployee);
-      handleCountry(selectedEmployee.country);
-      handleState(selectedEmployee?.state);
+      reset({
+        ...selectedEmployee,
+        joiningDate: selectedEmployee.joiningDate.split("T")[0],
+      });
+
+      setPreview(
+        `http://localhost:5000/uploads/${selectedEmployee.profileImage}`,
+      );
+      setSelecteDepartment(selectedEmployee.departmentId);
+      setSelectedDesignation(selectedEmployee.designationId);
+
+      setSelectedCountry(selectedEmployee.countryId);
+      setSelectedStateId(selectedEmployee.stateId);
+      setSelectedCityId(selectedEmployee.cityId);
+
+      handleCountry(selectedEmployee.countryId);
+      handleState(selectedEmployee?.stateId);
     }
   }, [selectedEmployee, reset]);
 
-  const onSubmit = (data: Employee) => {
-    if (selectedEmployee) {
-      dispatch(updateEmployee(data));
-      reset();
-    } else {
-      dispatch(addEmployee(data));
-    }
-    dispatch(setIsModalOpen(false));
-  };
+  const departmentList = useAppSelector(
+    (state) => state.employee.departmentList,
+  );
 
+  const designationtList = useAppSelector(
+    (state) => state.employee.designationList,
+  );
+
+  const countryList = useAppSelector((state) => state.employee.countryList);
   const filteredStates = useAppSelector(
     (state) => state.employee.selectFilteredStates ?? [],
   );
-
-  //fill State dropdown list
-  const handleCountry = (countryId: number) => {
-    dispatch(setSelectedCountry(countryId));
-  };
-
   const filteredCities = useAppSelector(
     (state) => state.employee.selectFilteredCities ?? [],
   );
 
+  const onSubmit = async (data: Employee) => {
+    const formData = new FormData();
+
+    if (selectedEmployee) {
+      formData.append("employeeId", String(data.employeeId));
+    }
+
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("departmentId", String(data.departmentId));
+    formData.append("designationId", String(data.designationId));
+    formData.append("status", data.status);
+    formData.append("phone", data.phone);
+    formData.append("address1", data.address1);
+    formData.append("address2", data.address2);
+    formData.append("countryId", String(data.countryId));
+    formData.append("stateId", String(data.stateId));
+    formData.append("cityId", String(data.cityId));
+    formData.append("pincode", data.pincode);
+
+    if (data.profileImage?.[0]) {
+      formData.append("profileImage", data.profileImage[0]);
+    }
+
+    const isoDate = new Date(data.joiningDate).toISOString();
+
+    formData.append("joiningDate", isoDate);
+    formData.append("salary", String(data.salary));
+    formData.append("gender", data.gender);
+    formData.append("maritalStatus", data.maritalStatus);
+
+    if (selectedEmployee) {
+      await dispatch(
+        updateEmployeeAsync({ employeeId: data.employeeId, formData }),
+      );
+      await dispatch(fetchEmployees());
+      dispatch(setIsModalOpen(false));
+      reset();
+    } else {
+      await dispatch(addEmployeeAsync(formData));
+      await dispatch(fetchEmployees());
+      dispatch(setIsModalOpen(false));
+    }
+  };
+
+  //fill State dropdown list
+  const handleCountry = (countryId: number) => {
+    dispatch(fetchStatesByCountryId(countryId));
+  };
+
   //fill city dropdown list
   const handleState = (stateId: number) => {
-    dispatch(setSelectedState(stateId));
+    dispatch(fetchCitiesByStateId(stateId));
   };
 
   return (
@@ -197,7 +265,7 @@ export default function EmployeeForm() {
               })}
             >
               <option value={0}>Select</option>
-              {department.map((dept) => (
+              {departmentList.map((dept) => (
                 <option key={dept.id} value={dept.id}>
                   {dept.name}
                 </option>
@@ -221,7 +289,7 @@ export default function EmployeeForm() {
               })}
             >
               <option value={0}>Select</option>
-              {designation.map((desg) => (
+              {designationtList.map((desg) => (
                 <option key={desg.id} value={desg.id}>
                   {desg.name}
                 </option>
@@ -307,33 +375,39 @@ export default function EmployeeForm() {
           <div>
             <label className="font-bold">Country : </label>
             <select
+              value={selectedCountry}
               className="border-2 w-50 outline-none p-1 m-1"
-              {...register("country", {
-                required: "Country is required",
+              {...register("countryId", {
+                validate: () => selectedCountry !== 0 || "Country is required",
                 onChange: (e) => {
-                  handleCountry(e.target.value);
+                  const id = Number(e.target.value);
+                  setSelectedCountry(id);
+                  handleCountry(id);
                 },
               })}
             >
               <option value={0}>Select</option>
-              {countries.map((country) => (
+              {countryList.map((country) => (
                 <option key={country.id} value={country.id}>
                   {country.name}
                 </option>
               ))}
             </select>
-            {errors.country && (
-              <p className="text-red-700">{errors.country.message}</p>
+            {errors.countryId && (
+              <p className="text-red-700">{errors.countryId.message}</p>
             )}
           </div>
           <div>
             <label className="font-bold">State : </label>
             <select
+              value={selectedStateId}
               className="border-2 w-50 outline-none p-1 m-1"
-              {...register("state", {
-                required: "State is required",
+              {...register("stateId", {
+                validate: () => selectedStateId !== 0 || "State is required",
                 onChange: (e) => {
-                  handleState(e.target.value);
+                  const id = Number(e.target.value);
+                  setSelectedStateId(id);
+                  handleState(id);
                 },
               })}
             >
@@ -344,16 +418,20 @@ export default function EmployeeForm() {
                 </option>
               ))}
             </select>
-            {errors.state && (
-              <p className="text-red-700">{errors.state.message}</p>
+            {errors.stateId && (
+              <p className="text-red-700">{errors.stateId.message}</p>
             )}
           </div>
           <div>
             <label className="font-bold">City : </label>
             <select
+              value={selectedCityId}
               className="border-2 w-50 outline-none p-1 m-1"
-              {...register("city", {
-                required: "City is required",
+              {...register("cityId", {
+                validate: () => selectedCityId !== 0 || "City is required",
+                onChange: (e) => {
+                  setSelectedCityId(Number(e.target.value));
+                },
               })}
             >
               <option value={0}>Select</option>
@@ -363,8 +441,8 @@ export default function EmployeeForm() {
                 </option>
               ))}
             </select>
-            {errors.city && (
-              <p className="text-red-700">{errors.city.message}</p>
+            {errors.cityId && (
+              <p className="text-red-700">{errors.cityId.message}</p>
             )}
           </div>
         </div>
@@ -381,6 +459,33 @@ export default function EmployeeForm() {
               },
             })}
           />
+        </div>
+        <div>
+          <label className="font-bold">Profile : </label>
+          <div className="flex items-center gap-4">
+            <input
+              type="file"
+              className="border-2 w-100 outline-none p-1 m-1"
+              {...register("profileImage", {
+                required: !selectedEmployee
+                  ? "Profile Image is required"
+                  : false,
+                onChange: (e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setPreview(URL.createObjectURL(file));
+                  }
+                },
+              })}
+            />
+            {preview && (
+              <img
+                src={preview}
+                alt="Profile Preview"
+                className="w-24 h-24 rounded-full object-cover border"
+              />
+            )}
+          </div>
         </div>
         <div className="text-center justify-center">
           <button

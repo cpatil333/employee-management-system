@@ -1,18 +1,52 @@
-import { cities } from "@/app/data/cities";
-import { countries } from "@/app/data/countries";
-import { department } from "@/app/data/department";
-import { designation } from "@/app/data/designation";
-import { states } from "@/app/data/states";
-import { setEmployeeDetailModal } from "@/app/features/employee/employeeSlice";
+import {
+  fetchCitiesByStateId,
+  fetchCounties,
+  fetchDepartments,
+  fetchDesignations,
+  fetchStatesByCountryId,
+  setEmployeeDetailModal,
+} from "@/app/features/employee/employeeSlice";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
+import { useEffect } from "react";
 
 export default function EmployeeDetailModal() {
   const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    dispatch(fetchDepartments());
+    dispatch(fetchDesignations());
+    dispatch(fetchCounties());
+  }, [dispatch]);
+
   const selectedEmployee = useAppSelector(
     (state) => state.employee.selectedEmployee,
   );
+
+  useEffect(() => {
+    if (selectedEmployee) {
+      dispatch(fetchStatesByCountryId(selectedEmployee.countryId));
+      dispatch(fetchCitiesByStateId(selectedEmployee.stateId));
+    }
+  }, [dispatch, selectedEmployee]);
+
+  const departmentList = useAppSelector(
+    (state) => state.employee.departmentList,
+  );
+
+  const designationtList = useAppSelector(
+    (state) => state.employee.designationList,
+  );
+
+  const countryList = useAppSelector((state) => state.employee.countryList);
+  const filteredStates = useAppSelector(
+    (state) => state.employee.selectFilteredStates ?? [],
+  );
+  const filteredCities = useAppSelector(
+    (state) => state.employee.selectFilteredCities ?? [],
+  );
+
+  //console.log(selectedEmployee);
 
   return (
     <div
@@ -33,15 +67,17 @@ export default function EmployeeDetailModal() {
           <DetailRows
             label="Department"
             value={
-              department.find((d) => d.id === selectedEmployee?.departmentId)
-                ?.name ?? ""
+              departmentList.find(
+                (d) => d.id === selectedEmployee?.departmentId,
+              )?.name ?? ""
             }
           />
           <DetailRows
             label="Designation"
             value={
-              designation.find((d) => d.id === selectedEmployee?.departmentId)
-                ?.name ?? ""
+              designationtList.find(
+                (d) => d.id === selectedEmployee?.designationId,
+              )?.name ?? ""
             }
           />
           <DetailRows
@@ -80,20 +116,22 @@ export default function EmployeeDetailModal() {
           <DetailRows
             label="Country"
             value={
-              countries.find((d) => d.id === selectedEmployee?.country)?.name ??
-              ""
+              countryList.find((d) => d.id === selectedEmployee?.countryId)
+                ?.name ?? ""
             }
           />
           <DetailRows
             label="State"
             value={
-              states.find((d) => d.id === selectedEmployee?.state)?.name ?? ""
+              filteredStates.find((d) => d.id === selectedEmployee?.stateId)
+                ?.name ?? ""
             }
           />
           <DetailRows
             label="City"
             value={
-              cities.find((d) => d.id === selectedEmployee?.city)?.name ?? ""
+              filteredCities.find((c) => c.id === selectedEmployee?.cityId)
+                ?.name ?? ""
             }
           />
           <DetailRows label="Pincode" value={selectedEmployee?.pincode} />

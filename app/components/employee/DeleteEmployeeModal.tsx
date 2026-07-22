@@ -1,5 +1,5 @@
 import {
-  deleteEmployee,
+  deleteEmployeeAsync,
   setIsDeleteModalOpen,
 } from "@/app/features/employee/employeeSlice";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
@@ -39,7 +39,9 @@ export default function DeleteEmployeeModal() {
             <button
               className="bg-red-700 text-xl text-white p-2 m-2"
               onClick={() => {
-                dispatch(deleteEmployee(Number(selectedEmployee?.employeeId)));
+                dispatch(
+                  deleteEmployeeAsync(Number(selectedEmployee?.employeeId)),
+                );
                 dispatch(setIsDeleteModalOpen(false));
               }}
             >
