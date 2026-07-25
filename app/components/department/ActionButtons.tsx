@@ -1,46 +1,45 @@
 "use client";
-import DeleteEmployeeModal from "./DeleteEmployeeModal";
-import EmployeeDetailModal from "./EmployeeDetailModal";
+
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
-
 import {
-  fetchEmployeeById,
-  setEmployeeDetailModal,
+  fetchDepartmentById,
+  setDepartmentDetailModal,
   setIsDeleteModalOpen,
   setIsModalOpen,
-} from "@/app/features/employee/employeeSlice";
-
+} from "@/app/features/department/departmentSlice";
+import DepartmentViewModal from "./DepartmentViewModal";
+import DeleteEmployeeModal from "./DeleteConfirmationModal";
 
 type ActionButtonsProps = {
-  employeeId: number;
+  departmentId: number;
 };
 
-export default function ActionButtons({ employeeId }: ActionButtonsProps) {
+export default function ActionButtons({ departmentId }: ActionButtonsProps) {
   const dispatch = useAppDispatch();
 
   const isDeleteModalOpen = useAppSelector(
-    (state) => state.employee.isDeleteModalOpen,
+    (state) => state.designation.isDeleteModalOpen,
   );
 
-  const employeeDetailModal = useAppSelector(
-    (state) => state.employee.employeeDetailModal,
+  const designationDetailModal = useAppSelector(
+    (state) => state.designation.designationDetailModal,
   );
 
   const handleEdit = () => {
-    dispatch(fetchEmployeeById(employeeId));
+    dispatch(fetchDepartmentById(departmentId));
     dispatch(setIsModalOpen(true));
   };
 
   const handleView = () => {
-    dispatch(setEmployeeDetailModal(true));
+    dispatch(setDepartmentDetailModal(true));
     //dispatch(setSelectedEmployee(employeeId));
-    dispatch(fetchEmployeeById(employeeId));
+    dispatch(fetchDepartmentById(departmentId));
   };
 
   const handleDelete = () => {
-    dispatch(fetchEmployeeById(employeeId));
     dispatch(setIsDeleteModalOpen(true));
+    dispatch(fetchDepartmentById(departmentId));
   };
 
   return (
@@ -64,7 +63,7 @@ export default function ActionButtons({ employeeId }: ActionButtonsProps) {
         🗑 Delete
       </button>
       {isDeleteModalOpen && <DeleteEmployeeModal />}
-      {employeeDetailModal && <EmployeeDetailModal />}
+      {designationDetailModal && <DepartmentViewModal />}
     </div>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 import {
-  deleteEmployeeAsync,
+  deleteDepartmentAsync,
   setIsDeleteModalOpen,
-} from "@/app/features/employee/employeeSlice";
+} from "@/app/features/department/departmentSlice";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import toast from "react-hot-toast";
@@ -10,8 +10,8 @@ import toast from "react-hot-toast";
 export default function DeleteEmployeeModal() {
   const dispatch = useAppDispatch();
 
-  const selectedEmployee = useAppSelector(
-    (state) => state.employee.selectedEmployee,
+  const selectedDepartment = useAppSelector(
+    (state) => state.department.selectedDepartment,
   );
 
   return (
@@ -19,7 +19,7 @@ export default function DeleteEmployeeModal() {
       <div className="bg-white rounded-xl shadow-xl w-100 max-w-5xl h-[30vh]">
         <div className="flex items-center justify-between border-2 p-4">
           <h2 className="text-2xl font-semibold text-blue-700">
-            Delete Employee
+            Delete Department
           </h2>
           <button
             onClick={() => dispatch(setIsDeleteModalOpen(false))}
@@ -30,7 +30,7 @@ export default function DeleteEmployeeModal() {
         </div>
         <div className="max-w-xl mt-10 ml-10">
           Are you sure you want to delete
-          <strong> {selectedEmployee?.name}</strong>?
+          <strong> {selectedDepartment?.name}</strong>?
           <div>
             <button
               className="bg-blue-700 text-xl text-white p-2 m-2"
@@ -41,9 +41,7 @@ export default function DeleteEmployeeModal() {
             <button
               className="bg-red-700 text-xl text-white p-2 m-2"
               onClick={() => {
-                dispatch(
-                  deleteEmployeeAsync(Number(selectedEmployee?.employeeId)),
-                );
+                dispatch(deleteDepartmentAsync(Number(selectedDepartment?.id)));
                 toast.success("Employee deleted");
                 dispatch(setIsDeleteModalOpen(false));
               }}

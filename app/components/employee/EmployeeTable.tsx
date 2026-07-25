@@ -1,3 +1,4 @@
+"use client";
 import EmployeeRow from "./EmployeeRow";
 import { useState } from "react";
 import { SortField } from "@/app/constant/employee.constants";
@@ -24,7 +25,7 @@ export default function EmployeeTable() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-x-auto">
+    <div className="w-6xl bg-white rounded-xl shadow-lg overflow-x-auto">
       <table className="w-6xl bg-white text-black text-[16px]">
         <thead className="bg-blue-950 text-white">
           <tr className="bg-black text-white border-2">

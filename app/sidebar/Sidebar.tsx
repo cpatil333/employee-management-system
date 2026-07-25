@@ -1,9 +1,13 @@
 "use client";
-import { useState } from "react";
+
 import { menuItems } from "../data/menu";
+import { setActiveMenu } from "../features/uiSlice";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { useAppSelector } from "../hooks/useAppSelector";
 
 export default function Sidebar() {
-  const [active, setActive] = useState("Dashboard");
+  const dispatch = useAppDispatch();
+  const activeMenu = useAppSelector((state) => state.ui.activeMenu);
 
   return (
     <aside className="w-64 min-h-screen bg-blue-950 text-white shadow-lg">
@@ -12,8 +16,11 @@ export default function Sidebar() {
         {menuItems.map((menu) => (
           <li
             key={menu.id}
-            onClick={() => setActive(menu.title)}
-            className="w-3xs p-2 cursor-pointer"
+            onClick={() => dispatch(setActiveMenu(menu.title))}
+            className={`p-3 cursor-pointer rounded-lg 
+              ${
+                activeMenu === menu.title ? "bg-blue-700" : "hover:bg-blue-800"
+              }`}
           >
             <span>{menu.icon}</span> <span>{menu.title}</span>
           </li>

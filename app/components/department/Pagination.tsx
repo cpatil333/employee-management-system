@@ -1,18 +1,18 @@
 "use client";
 import { useEffect } from "react";
-import { selectTotalPages } from "../../features/employee/employeeSelectors";
+import { selectTotalPages } from "../../features/department/departmentSelectors";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import {
   nextPage,
   previousPage,
   setCurrentPage,
-} from "@/app/features/employee/employeeSlice";
+} from "@/app/features/department/departmentSlice";
 
 export default function Pagination() {
   const dispatch = useAppDispatch();
 
-  const currentPage = useAppSelector((state) => state.employee.currentPage);
+  const currentPage = useAppSelector((state) => state.department.currentPage);
   const totalPages = useAppSelector(selectTotalPages);
 
   useEffect(() => {

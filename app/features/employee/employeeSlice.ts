@@ -11,7 +11,7 @@ import {
   updateEmployee,
 } from "@/app/services/employeeApi";
 import { getCountry } from "@/app/services/countryApi";
-import { getDepartment } from "@/app/services/departmentApi";
+import { getDepartments } from "@/app/services/departmentApi";
 import { Department } from "@/app/types/department.types";
 import { Designation } from "@/app/types/designation.types";
 import { getDesignation } from "@/app/services/designationApi";
@@ -131,7 +131,7 @@ const fetchDepartments = createAsyncThunk(
   "employee/fetchDepartments",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await getDepartment();
+      const data = await getDepartments();
       return data;
     } catch (error) {
       if (error instanceof Error) {
@@ -420,6 +420,7 @@ export const EmployeeSlice = createSlice({
         const index = state.employeeList.findIndex(
           (emp) => emp.employeeId === action.payload.employeeId,
         );
+
         if (index != -1) {
           state.employeeList[index] = action.payload;
         }
