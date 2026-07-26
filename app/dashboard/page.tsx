@@ -40,7 +40,7 @@ export default function DashboardPage() {
   }, [employeeList]);
 
   return (
-    <div className="w-5xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 p-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
       {dashboard.map((dash) => (
         <Cards
           key={dash.title}

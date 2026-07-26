@@ -25,8 +25,10 @@ export default function Sidebar() {
     }
   };
   return (
-    <aside className="w-64 min-h-screen bg-blue-950 text-white shadow-lg">
-      <div className="text-xl  mt-5 font-bold mb-5">📊 Admin Dashboard</div>
+    <aside className="w-16 sm:w-20 md:w-56 lg:w-64 min-h-screen bg-blue-950 text-white shadow-lg">
+      <div className="hidden md:block text-xl mt-5 font-bold mb-5">
+        📊 Admin Dashboard
+      </div>
       <nav className="m-0 list-none">
         {menuItems.map((menu) => (
           <li

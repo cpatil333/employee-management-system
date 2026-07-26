@@ -51,7 +51,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen bg-gray-500 items-center justify-center">
       <div className="w-full max-w-md bg-white p-4 rounded shadow-md">
-        <h1 className="text-2xl text-black font-bold mb-6 text-center">
+        <h1 className="text-2xl md:text-xl text-black font-bold mb-6 text-center">
           Employee Management System
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
