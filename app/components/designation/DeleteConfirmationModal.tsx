@@ -11,8 +11,8 @@ import toast from "react-hot-toast";
 export default function DeleteDesignationModal() {
   const dispatch = useAppDispatch();
 
-  const selectedDepartment = useAppSelector(
-    (state) => state.department.selectedDepartment,
+  const selectedDesignation = useAppSelector(
+    (state) => state.designation.selectedDesignation,
   );
 
   return (
@@ -31,7 +31,7 @@ export default function DeleteDesignationModal() {
         </div>
         <div className="max-w-xl mt-10 ml-10">
           Are you sure you want to delete
-          <strong> {selectedDepartment?.name}</strong>?
+          <strong> {selectedDesignation?.name}</strong>?
           <div>
             <button
               className="bg-blue-700 text-xl text-white p-2 m-2"
@@ -43,7 +43,7 @@ export default function DeleteDesignationModal() {
               className="bg-red-700 text-xl text-white p-2 m-2"
               onClick={() => {
                 dispatch(
-                  deleteDesignationAsync(Number(selectedDepartment?.id)),
+                  deleteDesignationAsync(Number(selectedDesignation?.id)),
                 );
                 toast.success("Employee deleted");
                 dispatch(setIsDeleteModalOpen(false));

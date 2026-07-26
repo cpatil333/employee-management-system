@@ -1,14 +1,29 @@
 "use client";
 
 import { menuItems } from "../data/menu";
+import { logout } from "../features/login/loginSlice";
 import { setActiveMenu } from "../features/uiSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useAppSelector } from "../hooks/useAppSelector";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
+  const router = useRouter();
+
   const dispatch = useAppDispatch();
   const activeMenu = useAppSelector((state) => state.ui.activeMenu);
+  // console.log("Admin page:", activeMenu);
 
+  const handleMenu = (menutitle: string) => {
+    if (menutitle === "Logout") {
+      dispatch(logout());
+      localStorage.removeItem("user"); // if used
+      sessionStorage.removeItem("user"); // if used
+      router.push("/");
+    } else {
+      dispatch(setActiveMenu(menutitle));
+    }
+  };
   return (
     <aside className="w-64 min-h-screen bg-blue-950 text-white shadow-lg">
       <div className="text-xl  mt-5 font-bold mb-5">📊 Admin Dashboard</div>
@@ -16,7 +31,7 @@ export default function Sidebar() {
         {menuItems.map((menu) => (
           <li
             key={menu.id}
-            onClick={() => dispatch(setActiveMenu(menu.title))}
+            onClick={() => handleMenu(menu.title)}
             className={`p-3 cursor-pointer rounded-lg 
               ${
                 activeMenu === menu.title ? "bg-blue-700" : "hover:bg-blue-800"

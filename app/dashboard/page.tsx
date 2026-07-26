@@ -1,10 +1,18 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { RootState } from "../store/store";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { fetchEmployees } from "../features/employee/employeeSlice";
 
 export default function DashboardPage() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchEmployees());
+  }, [dispatch]);
+
   const employeeList = useAppSelector(
     (state: RootState) => state.employee.employeeList,
   );
@@ -13,8 +21,12 @@ export default function DashboardPage() {
     return [
       { title: "Total Employees", value: employeeList.length },
       {
-        title: "Department",
+        title: "Total Departments",
         value: new Set(employeeList.map((e) => e.departmentId)).size,
+      },
+      {
+        title: "Total Designations",
+        value: new Set(employeeList.map((e) => e.designationId)).size,
       },
       {
         title: "Active Employees",
@@ -28,7 +40,7 @@ export default function DashboardPage() {
   }, [employeeList]);
 
   return (
-    <div className="w-6xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 p-6">
+    <div className="w-5xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 p-6">
       {dashboard.map((dash) => (
         <Cards
           key={dash.title}

@@ -5,15 +5,14 @@ import {
   getDesignations,
   updateDesignation,
 } from "@/app/services/designationApi";
-import { Department } from "@/app/types/department.types";
 import { Designation } from "@/app/types/designation.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type updateDepartmentPayLoad = {
+type updateDesignationPayLoad = {
   designationId: number;
-  designationData: Department;
+  designationData: Designation;
 };
-type DepartmentState = {
+type DesignationState = {
   designationList: Designation[];
   selectedDesignation: Designation | null;
   loading: boolean;
@@ -26,7 +25,7 @@ type DepartmentState = {
   currentPage: number;
   perPage: number;
 };
-const initialState: DepartmentState = {
+const initialState: DesignationState = {
   designationList: [],
   selectedDesignation: null,
   loading: false,
@@ -91,7 +90,7 @@ const addDesignationAsync = createAsyncThunk(
 const updateDesignationAsync = createAsyncThunk(
   "department/updateDesignationAsync",
   async (
-    { designationId, designationData }: updateDepartmentPayLoad,
+    { designationId, designationData }: updateDesignationPayLoad,
     { rejectWithValue },
   ) => {
     try {

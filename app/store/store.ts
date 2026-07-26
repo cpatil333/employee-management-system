@@ -3,6 +3,7 @@ import employeeReducer from "../features/employee/employeeSlice";
 import departmentReducer from "../features/department/departmentSlice";
 import designationReducer from "../features/designation/designationSlice";
 import uiReducer from "../features/uiSlice";
+import loginReducer from "../features/login/loginSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     ui: uiReducer,
     department: departmentReducer,
     designation: designationReducer,
+    login: loginReducer,
   },
 });
 

@@ -1,10 +1,17 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { LoginTypes } from "../types/logintypes";
+import { LoginType } from "../types/logintypes";
 import styles from "../module/common.module.css";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { fetchLoginAsyc } from "../features/login/loginSlice";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -17,8 +24,28 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (data: LoginTypes) => {
-    reset();
+  const onSubmit = async (data: LoginType) => {
+    try {
+      const resultAction = await dispatch(fetchLoginAsyc(data));
+      // console.log(resultAction);
+      if (
+        fetchLoginAsyc.fulfilled.match(resultAction) &&
+        resultAction.payload
+      ) {
+        toast.success("Login successfully!");
+        reset();
+        router.push("/admin");
+      } else {
+        toast.error("Invalid email or password");
+      }
+      reset();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      } else {
+        throw new Error("Something went wrong!");
+      }
+    }
   };
 
   return (

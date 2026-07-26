@@ -21,13 +21,13 @@ export const updateDesignation = async (
   designationData: Designation,
 ) => {
   const response = await api.put(
-    `/departments/${designationId}`,
+    `/designations/${designationId}`,
     designationData,
   );
   return response.data;
 };
 
-export const deleteDesignation = async (departmentId: number) => {
-  const response = await api.delete(`/designations/${departmentId}`);
+export const deleteDesignation = async (designationId: number) => {
+  const response = await api.delete(`/designations/${designationId}`);
   return response.data;
 };
