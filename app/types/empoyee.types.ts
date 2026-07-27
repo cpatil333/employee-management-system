@@ -2,6 +2,8 @@ export type Employee = {
   employeeId: number;
   name: string;
   email: string;
+  password: string;
+  role: string;
   departmentId: number;
   designationId: number;
   status: "Active" | "Inactive";

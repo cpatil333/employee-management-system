@@ -29,10 +29,12 @@ export default function EmployeeForm() {
       employeeId: 0,
       name: "",
       email: "",
+      password: "",
       departmentId: 0,
       designationId: 0,
       status: "Active",
       phone: "",
+      role: "",
       address1: "",
       address2: "",
       countryId: 0,
@@ -71,9 +73,11 @@ export default function EmployeeForm() {
         joiningDate: selectedEmployee.joiningDate.split("T")[0],
       });
 
-      setPreview(
-        `http://localhost:5000/uploads/${selectedEmployee.profileImage}`,
-      );
+      setPreview(selectedEmployee.profileImage);
+
+      // setPreview(
+      //   `http://localhost:5000/uploads/${selectedEmployee.profileImage}`,
+      // );
       setSelecteDepartment(selectedEmployee.departmentId);
       setSelectedDesignation(selectedEmployee.designationId);
 
@@ -93,7 +97,7 @@ export default function EmployeeForm() {
   const designationtList = useAppSelector(
     (state) => state.employee.designationList,
   );
-
+  // console.log(designationtList);
   const countryList = useAppSelector((state) => state.employee.countryList);
   const filteredStates = useAppSelector(
     (state) => state.employee.selectFilteredStates ?? [],
@@ -112,10 +116,12 @@ export default function EmployeeForm() {
 
       formData.append("name", data.name);
       formData.append("email", data.email);
+      formData.append("password", data.password);
+      formData.append("phone", data.phone);
+      formData.append("role", data.role);
       formData.append("departmentId", String(data.departmentId));
       formData.append("designationId", String(data.designationId));
       formData.append("status", data.status);
-      formData.append("phone", data.phone);
       formData.append("address1", data.address1);
       formData.append("address2", data.address2);
       formData.append("countryId", String(data.countryId));
@@ -153,8 +159,12 @@ export default function EmployeeForm() {
           dispatch(setIsModalOpen(false));
           reset();
         }
+        if (addEmployeeAsync.rejected.match(resultAction)) {
+          toast.error(resultAction.payload as string);
+        }
       }
     } catch (error) {
+      console.log(error);
       toast.error("Failed to save employee");
     }
   };
@@ -209,6 +219,25 @@ export default function EmployeeForm() {
               )}
             </div>
             <div>
+              <label className="font-bold">Password : </label>
+              <input
+                type="password"
+                className="border-2 w-100 outline-none p-1 m-1"
+                {...register("password", {
+                  required: "password is required",
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+                  },
+                })}
+              />
+              {errors.password && (
+                <p className="text-red-700">{errors.password.message}</p>
+              )}
+            </div>
+            <div>
               <label className="font-bold">Phone : </label>
               <input
                 type="text"
@@ -223,6 +252,21 @@ export default function EmployeeForm() {
               />
               {errors.phone && (
                 <p className="text-red-700">{errors.phone.message}</p>
+              )}
+            </div>
+            <div>
+              <label className="font-bold">Employee Role : </label>
+              <select
+                className="border-2 w-50 outline-none p-1 m-1"
+                {...register("role", {
+                  required: "user role is required",
+                })}
+              >
+                <option className="Admin">Admin</option>
+                <option className="Employee">Employee</option>
+              </select>
+              {errors.role && (
+                <p className="text-red-700">{errors.role.message}</p>
               )}
             </div>
             <div>

@@ -14,7 +14,7 @@ import { getCountry } from "@/app/services/countryApi";
 import { getDepartments } from "@/app/services/departmentApi";
 import { Department } from "@/app/types/department.types";
 import { Designation } from "@/app/types/designation.types";
-import { getDesignation } from "@/app/services/designationApi";
+import { getDesignation, getDesignations } from "@/app/services/designationApi";
 import { getStates } from "@/app/services/stateApi";
 import { Country } from "@/app/types/country.types";
 import { getCities } from "@/app/services/citiesApi";
@@ -147,7 +147,7 @@ const fetchDesignations = createAsyncThunk(
   "employee/fetchDesignations",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await getDesignation();
+      const data = await getDesignations();
       return data;
     } catch (error) {
       if (error instanceof Error) {

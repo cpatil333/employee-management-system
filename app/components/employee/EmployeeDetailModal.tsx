@@ -29,9 +29,10 @@ export default function EmployeeDetailModal() {
     if (selectedEmployee) {
       dispatch(fetchStatesByCountryId(selectedEmployee.countryId));
       dispatch(fetchCitiesByStateId(selectedEmployee.stateId));
-      setPreview(
-        `http://localhost:5000/uploads/${selectedEmployee.profileImage}`,
-      );
+      // setPreview(
+      //   `http://localhost:5000/uploads/${selectedEmployee.profileImage}`,
+      // );
+      setPreview(selectedEmployee.profileImage);
     }
   }, [dispatch, selectedEmployee]);
 

@@ -27,11 +27,12 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginType) => {
     try {
       const resultAction = await dispatch(fetchLoginAsyc(data));
-      // console.log(resultAction);
+
       if (
         fetchLoginAsyc.fulfilled.match(resultAction) &&
         resultAction.payload
       ) {
+        localStorage.setItem("user", JSON.stringify(resultAction.payload));
         toast.success("Login successfully!");
         reset();
         router.push("/admin");
