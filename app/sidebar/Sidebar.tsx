@@ -12,7 +12,6 @@ export default function Sidebar() {
 
   const dispatch = useAppDispatch();
   const activeMenu = useAppSelector((state) => state.ui.activeMenu);
-  // console.log("Admin page:", activeMenu);
 
   const handleMenu = (menutitle: string) => {
     if (menutitle === "Logout") {

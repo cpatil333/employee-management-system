@@ -9,7 +9,6 @@ export default function DepartmentViewModal() {
   const selectedDepartment = useAppSelector(
     (state) => state.department.selectedDepartment,
   );
-  console.log(selectedDepartment);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

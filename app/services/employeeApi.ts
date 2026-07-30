@@ -11,9 +11,6 @@ export const getEmployeeById = async (id: number) => {
 };
 
 export const createEmployee = async (formData: FormData) => {
-  // for (const [key, value] of formData.entries()) {
-  //   console.log(key, value);
-  // }
   const response = await api.post("/employees", formData);
   return response.data;
 };

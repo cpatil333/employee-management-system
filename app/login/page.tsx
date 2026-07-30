@@ -112,7 +112,7 @@ export default function LoginPage() {
               id="btnsubmit"
               type="submit"
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Logging in..." : "Sign Up"}
             </button>
           </div>
         </form>

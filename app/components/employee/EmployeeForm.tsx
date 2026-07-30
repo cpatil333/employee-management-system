@@ -100,7 +100,7 @@ export default function EmployeeForm() {
   const designationtList = useAppSelector(
     (state) => state.employee.designationList,
   );
-  // console.log(designationtList);
+
   const countryList = useAppSelector((state) => state.employee.countryList);
   const filteredStates = useAppSelector(
     (state) => state.employee.selectFilteredStates ?? [],

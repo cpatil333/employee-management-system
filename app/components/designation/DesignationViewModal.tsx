@@ -10,7 +10,6 @@ export default function DesignationViewModal() {
   const selectedDesignation = useAppSelector(
     (state) => state.designation.selectedDesignation,
   );
-  console.log(selectedDesignation);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

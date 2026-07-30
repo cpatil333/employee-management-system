@@ -31,15 +31,11 @@ export default function DepartmentForm() {
     (state) => state.department.selectedDepartment,
   );
 
-  console.log(selectedDepartment);
-
   useEffect(() => {
     if (selectedDepartment) {
       reset(selectedDepartment);
     }
   }, [selectedDepartment, reset]);
-
-  console.log(selectedDepartment);
 
   const onSubmit = async (data: Department) => {
     try {

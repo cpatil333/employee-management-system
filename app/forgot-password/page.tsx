@@ -80,8 +80,14 @@ export default function ForgotPasswordPage() {
           </div>
           <div>
             <button
+              onClick={() => router.push("/login")}
+              className="w-50 text-xl text-blue-600 p-2 rounded cursor-pointer "
+            >
+              Back to Login
+            </button>
+            <button
               disabled={loading}
-              className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition duration-200"
+              className="w-50 bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition duration-200"
               id="btnsubmit"
               type="submit"
             >
