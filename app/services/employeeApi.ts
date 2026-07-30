@@ -5,8 +5,9 @@ export const getEmployees = async () => {
   return response.data;
 };
 
-export const getEmployeeById = async (id: number) => {
-  const response = await api.get(`/employees/${id}`);
+export const getEmployeeById = async (employeeId: number) => {
+  const response = await api.get(`/employees/${employeeId}`);
+  console.log(response.data);
   return response.data;
 };
 
@@ -23,7 +24,7 @@ export const updateEmployee = async (
   return response.data;
 };
 
-export const deleteEmployee = async (id: number) => {
-  const response = await api.delete(`/employees/${id}`);
+export const deleteEmployee = async (employeeId: number) => {
+  const response = await api.delete(`/employees/${employeeId}`);
   return response.data;
 };

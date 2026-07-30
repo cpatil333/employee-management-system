@@ -6,17 +6,19 @@ import { useAppSelector } from "@/app/hooks/useAppSelector";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import {
   addEmployeeAsync,
-  fetchCitiesByStateId,
-  fetchCounties,
   fetchDepartments,
   fetchDesignations,
   fetchEmployees,
-  fetchStatesByCountryId,
   setIsModalOpen,
   updateEmployeeAsync,
 } from "@/app/features/employee/employeeSlice";
 import toast from "react-hot-toast";
 import Spinner from "../Spinner";
+import {
+  fetchCitiesByStateId,
+  fetchCountries,
+  fetchStatesByCountryId,
+} from "@/app/features/employee/locationSlice";
 
 export default function EmployeeForm() {
   const dispatch = useAppDispatch();
@@ -60,7 +62,7 @@ export default function EmployeeForm() {
   useEffect(() => {
     dispatch(fetchDepartments());
     dispatch(fetchDesignations());
-    dispatch(fetchCounties());
+    dispatch(fetchCountries());
   }, [dispatch]);
 
   const { loading } = useAppSelector((state) => state.employee);
@@ -101,13 +103,11 @@ export default function EmployeeForm() {
     (state) => state.employee.designationList,
   );
 
-  const countryList = useAppSelector((state) => state.employee.countryList);
-  const filteredStates = useAppSelector(
-    (state) => state.employee.selectFilteredStates ?? [],
-  );
-  const filteredCities = useAppSelector(
-    (state) => state.employee.selectFilteredCities ?? [],
-  );
+  const countryList = useAppSelector((state) => state.location.countryList);
+
+  const filteredStates = useAppSelector((state) => state.location.stateList);
+
+  const filteredCities = useAppSelector((state) => state.location.cityList);
 
   const onSubmit = async (data: Employee) => {
     try {

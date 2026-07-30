@@ -1,8 +1,7 @@
 import { Employee } from "@/app/types/empoyee.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SortField } from "../../constant/employee.constants";
-import { State } from "@/app/types/state.types";
-import { City } from "@/app/types/city.types";
+
 import {
   createEmployee,
   deleteEmployee,
@@ -10,20 +9,15 @@ import {
   getEmployees,
   updateEmployee,
 } from "@/app/services/employeeApi";
-import { getCountry } from "@/app/services/countryApi";
 import { getDepartments } from "@/app/services/departmentApi";
 import { Department } from "@/app/types/department.types";
 import { Designation } from "@/app/types/designation.types";
 import { getDesignations } from "@/app/services/designationApi";
-import { getStates } from "@/app/services/stateApi";
-import { Country } from "@/app/types/country.types";
-import { getCities } from "@/app/services/citiesApi";
 import axios from "axios";
 
 type EmployeeState = {
   employeeList: Employee[];
   employee: Employee | null;
-  countryList: Country[];
   departmentList: Department[];
   designationList: Designation[];
   selectedEmployee: Employee | null;
@@ -41,8 +35,6 @@ type EmployeeState = {
   selectedCountry: number;
   selectedState: number;
   selectedCity: number;
-  selectFilteredStates: State[] | null;
-  selectFilteredCities: City[] | null;
   employeeDetailModal: boolean;
   isDeleteModalOpen: boolean;
 };
@@ -50,7 +42,6 @@ type EmployeeState = {
 const initialState: EmployeeState = {
   employeeList: [],
   employee: null,
-  countryList: [],
   departmentList: [],
   designationList: [],
   selectedEmployee: null,
@@ -68,8 +59,6 @@ const initialState: EmployeeState = {
   selectedCountry: 0,
   selectedState: 0,
   selectedCity: 0,
-  selectFilteredStates: null,
-  selectFilteredCities: null,
   employeeDetailModal: false,
   isDeleteModalOpen: false,
 };
@@ -111,22 +100,6 @@ const fetchEmployeeById = createAsyncThunk(
   },
 );
 
-const fetchCounties = createAsyncThunk(
-  "employee/fetchCounties",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getCountry();
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
-      }
-    }
-  },
-);
-
 const fetchDepartments = createAsyncThunk(
   "employee/fetchDepartments",
   async (_, { rejectWithValue }) => {
@@ -148,38 +121,6 @@ const fetchDesignations = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await getDesignations();
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
-      }
-    }
-  },
-);
-
-const fetchStatesByCountryId = createAsyncThunk(
-  "employee/fetchStatesByCountryId",
-  async (countryId: number, { rejectWithValue }) => {
-    try {
-      const data = await getStates(countryId);
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
-      }
-    }
-  },
-);
-
-const fetchCitiesByStateId = createAsyncThunk(
-  "employee/fetchCitiesByStateId",
-  async (stateId: number, { rejectWithValue }) => {
-    try {
-      const data = await getCities(stateId);
       return data;
     } catch (error) {
       if (error instanceof Error) {
@@ -319,19 +260,7 @@ export const EmployeeSlice = createSlice({
       state.loading = false;
       state.error = action.payload as string;
     });
-    //for country
-    addBuilder.addCase(fetchCounties.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    addBuilder.addCase(fetchCounties.fulfilled, (state, action) => {
-      state.loading = false;
-      state.countryList = action.payload;
-    });
-    addBuilder.addCase(fetchCounties.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
+
     //deparments
     addBuilder.addCase(fetchDepartments.pending, (state) => {
       state.loading = true;
@@ -356,34 +285,6 @@ export const EmployeeSlice = createSlice({
       state.designationList = action.payload;
     });
     addBuilder.addCase(fetchDesignations.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
-
-    // fetch States
-    addBuilder.addCase(fetchStatesByCountryId.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    addBuilder.addCase(fetchStatesByCountryId.fulfilled, (state, action) => {
-      state.loading = false;
-      state.selectFilteredStates = action.payload;
-    });
-    addBuilder.addCase(fetchStatesByCountryId.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
-
-    //fetchCitieByStateId
-    addBuilder.addCase(fetchCitiesByStateId.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    addBuilder.addCase(fetchCitiesByStateId.fulfilled, (state, action) => {
-      state.loading = false;
-      state.selectFilteredCities = action.payload;
-    });
-    addBuilder.addCase(fetchCitiesByStateId.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });
@@ -465,11 +366,8 @@ export const {
 export {
   fetchEmployees,
   fetchEmployeeById,
-  fetchCounties,
   fetchDepartments,
   fetchDesignations,
-  fetchStatesByCountryId,
-  fetchCitiesByStateId,
   addEmployeeAsync,
   updateEmployeeAsync,
   deleteEmployeeAsync,

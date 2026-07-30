@@ -11,7 +11,6 @@ import {
   setIsModalOpen,
 } from "@/app/features/employee/employeeSlice";
 
-
 type ActionButtonsProps = {
   employeeId: number;
 };
@@ -34,7 +33,6 @@ export default function ActionButtons({ employeeId }: ActionButtonsProps) {
 
   const handleView = () => {
     dispatch(setEmployeeDetailModal(true));
-    //dispatch(setSelectedEmployee(employeeId));
     dispatch(fetchEmployeeById(employeeId));
   };
 

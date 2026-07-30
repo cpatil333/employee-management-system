@@ -2,71 +2,84 @@ import { department } from "@/app/data/department";
 import { designation } from "@/app/data/designation";
 import { RootState } from "@/app/store/store";
 import { Employee } from "@/app/types/empoyee.types";
+import { createSelector } from "@reduxjs/toolkit";
 
-export const selectFilteredEmployees = (state: RootState) => {
-  const {
-    searchTerm,
-    selectedDepartment,
-    selectedDesignation,
-    selectedStatus,
-    employeeList,
-  } = state.employee;
+export const selectEmployeeState = (state: RootState) => state.employee;
 
-  return employeeList.filter((emp) => {
-    const matchSearchTerm =
-      emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.email.toLowerCase().includes(searchTerm.toLowerCase());
+export const selectFilteredEmployees = createSelector(
+  [selectEmployeeState],
+  (employeeState) => {
+    const {
+      searchTerm,
+      selectedDepartment,
+      selectedDesignation,
+      selectedStatus,
+      employeeList,
+    } = employeeState;
 
-    const matchDepartment =
-      selectedDepartment === 0 || emp.departmentId === selectedDepartment;
+    return employeeList.filter((emp) => {
+      const matchSearchTerm =
+        emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchDesignation =
-      selectedDesignation === 0 || emp.designationId === selectedDesignation;
+      const matchDepartment =
+        selectedDepartment === 0 || emp.departmentId === selectedDepartment;
 
-    const matchStatus =
-      selectedStatus === "" ||
-      emp.status.toLowerCase() === selectedStatus.toLowerCase();
+      const matchDesignation =
+        selectedDesignation === 0 || emp.designationId === selectedDesignation;
 
-    return (
-      matchSearchTerm && matchDepartment && matchDesignation && matchStatus
-    );
-  });
-};
+      const matchStatus =
+        selectedStatus === "" ||
+        emp.status.toLowerCase() === selectedStatus.toLowerCase();
 
-export const selectSortedEmployees = (state: RootState) => {
-  const { sortField, sortOrder } = state.employee;
-  const sorted = [...selectFilteredEmployees(state)];
+      return (
+        matchSearchTerm && matchDepartment && matchDesignation && matchStatus
+      );
+    });
+  },
+);
 
-  const sortFunctions = {
-    name: (e: Employee) => e.name,
-    email: (e: Employee) => e.email,
-    department: (e: Employee) =>
-      department.find((d) => d.id === e.departmentId)?.name ?? "",
-    designation: (e: Employee) =>
-      designation.find((d) => d.id === e.designationId)?.name ?? "",
-    status: (e: Employee) => e.status,
-  };
-  sorted.sort((a, b) => {
-    const valueA = sortFunctions[sortField](a);
-    const valueB = sortFunctions[sortField](b);
+export const selectSortedEmployees = createSelector(
+  [selectFilteredEmployees, selectEmployeeState],
+  (filteredEmployees, employeeState) => {
+    const { sortField, sortOrder } = employeeState;
+    const sorted = [...filteredEmployees];
 
-    const comparison = valueA.localeCompare(valueB);
+    const sortFunctions = {
+      name: (e: Employee) => e.name,
+      email: (e: Employee) => e.email,
+      department: (e: Employee) =>
+        department.find((d) => d.id === e.departmentId)?.name ?? "",
+      designation: (e: Employee) =>
+        designation.find((d) => d.id === e.designationId)?.name ?? "",
+      status: (e: Employee) => e.status,
+    };
+    sorted.sort((a, b) => {
+      const valueA = sortFunctions[sortField](a);
+      const valueB = sortFunctions[sortField](b);
 
-    return sortOrder === "asc" ? comparison : -comparison;
-  });
-  return sorted;
-};
+      const comparison = valueA.localeCompare(valueB);
 
-export const selectPaginatedEmployees = (state: RootState) => {
-  const { currentPage, perPage } = state.employee;
-  const sortedEmployees = selectSortedEmployees(state);
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+    return sorted;
+  },
+);
 
-  const startIndex = (currentPage - 1) * perPage;
-  return sortedEmployees.slice(startIndex, startIndex + perPage);
-};
+export const selectPaginatedEmployees = createSelector(
+  [selectSortedEmployees, selectEmployeeState],
+  (sortedEmployees, employeeState) => {
+    const { currentPage, perPage } = employeeState;
 
-export const selectTotalPages = (state: RootState) => {
-  const filtered = selectFilteredEmployees(state);
+    const startIndex = (currentPage - 1) * perPage;
 
-  return Math.ceil(filtered.length / state.employee.perPage);
-};
+    return sortedEmployees.slice(startIndex, startIndex + perPage);
+  },
+);
+
+export const selectTotalPages = createSelector(
+  [selectFilteredEmployees, selectEmployeeState],
+  (filteredEmployees, employeeState) => {
+    return Math.ceil(filteredEmployees.length / employeeState.perPage);
+  },
+);

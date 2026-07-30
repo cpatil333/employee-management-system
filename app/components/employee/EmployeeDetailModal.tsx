@@ -1,12 +1,14 @@
 "use client";
 import {
-  fetchCitiesByStateId,
-  fetchCounties,
   fetchDepartments,
   fetchDesignations,
-  fetchStatesByCountryId,
   setEmployeeDetailModal,
 } from "@/app/features/employee/employeeSlice";
+import {
+  fetchCitiesByStateId,
+  fetchCountries,
+  fetchStatesByCountryId,
+} from "@/app/features/employee/locationSlice";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import { useEffect, useState } from "react";
@@ -18,7 +20,7 @@ export default function EmployeeDetailModal() {
   useEffect(() => {
     dispatch(fetchDepartments());
     dispatch(fetchDesignations());
-    dispatch(fetchCounties());
+    dispatch(fetchCountries());
   }, [dispatch]);
 
   const selectedEmployee = useAppSelector(
@@ -44,20 +46,14 @@ export default function EmployeeDetailModal() {
     (state) => state.employee.designationList,
   );
 
-  const countryList = useAppSelector((state) => state.employee.countryList);
-  const filteredStates = useAppSelector(
-    (state) => state.employee.selectFilteredStates ?? [],
-  );
-  const filteredCities = useAppSelector(
-    (state) => state.employee.selectFilteredCities ?? [],
-  );
+  const countryList = useAppSelector((state) => state.location.countryList);
+
+  const filteredStateList = useAppSelector((state) => state.location.stateList);
+
+  const filteredCityList = useAppSelector((state) => state.location.cityList);
 
   return (
-    <div
-      className="fixed inset-0 const selectedEmployee = useAppSelector(
-        (state) => state.employee.selectedEmployee,
-      ); bg-black/50 flex items-center justify-center z-50"
-    >
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white max-w-5xl w-full h-[90vh] rounded-xl shadow-xl overflow-x-auto">
         <div className="flex items-center justify-center border-2 p-2">
           <h2 className="text-2xl font-semibold text-blue-700">
@@ -140,14 +136,15 @@ export default function EmployeeDetailModal() {
             <DetailRows
               label="State"
               value={
-                filteredStates.find((d) => d.id === selectedEmployee?.stateId)
-                  ?.name ?? ""
+                filteredStateList.find(
+                  (d) => d.id === selectedEmployee?.stateId,
+                )?.name ?? ""
               }
             />
             <DetailRows
               label="City"
               value={
-                filteredCities.find((c) => c.id === selectedEmployee?.cityId)
+                filteredCityList.find((c) => c.id === selectedEmployee?.cityId)
                   ?.name ?? ""
               }
             />

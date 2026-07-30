@@ -2,20 +2,12 @@ import { Employee } from "@/app/types/empoyee.types";
 import ActionButtons from "./ActionButtons";
 import { department } from "@/app/data/department";
 import { designation } from "@/app/data/designation";
-import { useAppSelector } from "@/app/hooks/useAppSelector";
-import Spinner from "../Spinner";
 
 type EmployeeRowProps = {
   rowData: Employee;
 };
 
 export default function EmployeeRow({ rowData }: EmployeeRowProps) {
-  const { loading } = useAppSelector((state) => state.employee);
-
-  if (loading) {
-    return <Spinner />;
-  }
-
   return (
     <tr className="border-[1]">
       <td className="w-150px">{rowData.name}</td>
