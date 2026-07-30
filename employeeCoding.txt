@@ -165,3 +165,8 @@ export const {
   setIsDeleteModalOpen,
 } = EmployeeSlice.actions;
 export default EmployeeSlice.reducer;
+
+
+  // for (const [key, value] of formData.entries()) {
+  //   console.log(key, value);
+  // }
