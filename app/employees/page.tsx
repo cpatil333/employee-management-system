@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect,} from "react";
-import EmployeeTable from "../components/employee/EmployeeTable";
+import EmployeeTable from "../components/employee/EmployeeTableHeader";
 import EmployeeToolbar from "../components/employee/EmployeeToolbar";
-import Pagination from "../components/employee/Pagination";
+import Pagination from "../components/employee/EmployeePagination";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { fetchEmployees } from "../features/employee/employeeSlice";
 

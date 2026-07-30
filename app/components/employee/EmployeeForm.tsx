@@ -16,6 +16,7 @@ import {
   updateEmployeeAsync,
 } from "@/app/features/employee/employeeSlice";
 import toast from "react-hot-toast";
+import Spinner from "../Spinner";
 
 export default function EmployeeForm() {
   const dispatch = useAppDispatch();
@@ -61,6 +62,8 @@ export default function EmployeeForm() {
     dispatch(fetchDesignations());
     dispatch(fetchCounties());
   }, [dispatch]);
+
+  const { loading } = useAppSelector((state) => state.employee);
 
   const selectedEmployee = useAppSelector(
     (state) => state.employee.selectedEmployee,
@@ -559,9 +562,10 @@ export default function EmployeeForm() {
             </button>
             <button
               type="submit"
-              className="bg-blue-700  text-xl text-white p-2 m-2"
+              disabled={loading}
+              className="bg-blue-700 text-white p-2 rounded disabled:opacity-50"
             >
-              {selectedEmployee ? "Edit Employee" : "Add Employee"}
+              {loading ? "Saving..." : "Save Employee"}
             </button>
           </div>
         </form>

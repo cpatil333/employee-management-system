@@ -25,6 +25,7 @@ export default function DepartmentForm() {
       name: "",
     },
   });
+  const { loading } = useAppSelector((state) => state.employee);
 
   const selectedDepartment = useAppSelector(
     (state) => state.department.selectedDepartment,
@@ -97,10 +98,11 @@ export default function DepartmentForm() {
               Close
             </button>
             <button
+              disabled={loading}
               type="submit"
               className="bg-blue-700  text-xl text-white p-2 m-2"
             >
-              {selectedDepartment ? "Edit Department" : "Add Department"}
+              {loading ? "Saving..." : "Save Department"}
             </button>
           </div>
         </form>

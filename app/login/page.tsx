@@ -1,12 +1,15 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { LoginType } from "../types/logintypes";
+import { LoginType } from "../types/authTypes";
 import styles from "../module/common.module.css";
 import { useAppDispatch } from "../hooks/useAppDispatch";
-import { fetchLoginAsyc } from "../features/login/loginSlice";
+import { fetchLoginAsyc } from "../features/auth/authSlice";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "../hooks/useAppSelector";
+import Spinner from "../components/Spinner";
+import Link from "next/link";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
@@ -17,12 +20,14 @@ export default function LoginPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<LoginType>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
+
+  const { loading } = useAppSelector((state) => state.auth);
 
   const onSubmit = async (data: LoginType) => {
     try {
@@ -48,6 +53,10 @@ export default function LoginPage() {
       }
     }
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-500 items-center justify-center">
@@ -88,13 +97,22 @@ export default function LoginPage() {
               <p className={styles.error}>{errors.password.message}</p>
             )}
           </div>
+          <div className="flex justify-end mt-2 mb-4">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              Forgot Password?
+            </Link>
+          </div>
           <div>
             <button
+              disabled={loading}
               className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition duration-200"
               id="btnsubmit"
               type="submit"
             >
-              Sign Up
+              {loading ? "Logging in..." : "Login"}
             </button>
           </div>
         </form>

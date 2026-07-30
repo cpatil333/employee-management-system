@@ -26,6 +26,8 @@ export default function DesignationForm() {
     },
   });
 
+  const { loading } = useAppSelector((state) => state.employee);
+
   const selectedDesignation = useAppSelector(
     (state) => state.designation.selectedDesignation,
   );
@@ -93,10 +95,11 @@ export default function DesignationForm() {
               Close
             </button>
             <button
+              disabled={loading}
               type="submit"
               className="bg-blue-700  text-xl text-white p-2 m-2"
             >
-              {selectedDesignation ? "Edit Designation" : "Add Designation"}
+              {loading ? "Edit..." : "Save Designation"}
             </button>
           </div>
         </form>

@@ -1,7 +1,7 @@
 "use client";
 
 import { menuItems } from "../data/menu";
-import { logout } from "../features/login/loginSlice";
+import { logout } from "../features/auth/authSlice";
 import { setActiveMenu } from "../features/uiSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useAppSelector } from "../hooks/useAppSelector";

@@ -7,6 +7,14 @@ import { useAppSelector } from "@/app/hooks/useAppSelector";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { setCurrentPage } from "@/app/features/employee/employeeSlice";
 
+const columns = [
+  { header: "Name", accessor: "name" },
+  { header: "Email", accessor: "email" },
+  { header: "Department", accessor: "department" },
+  { header: "Designation", accessor: "designation" },
+  { header: "Status", accessor: "status" },
+] as const;
+
 export default function EmployeeTable() {
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");

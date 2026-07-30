@@ -14,7 +14,7 @@ import { getCountry } from "@/app/services/countryApi";
 import { getDepartments } from "@/app/services/departmentApi";
 import { Department } from "@/app/types/department.types";
 import { Designation } from "@/app/types/designation.types";
-import { getDesignation, getDesignations } from "@/app/services/designationApi";
+import { getDesignations } from "@/app/services/designationApi";
 import { getStates } from "@/app/services/stateApi";
 import { Country } from "@/app/types/country.types";
 import { getCities } from "@/app/services/citiesApi";
