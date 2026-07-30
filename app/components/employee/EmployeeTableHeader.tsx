@@ -6,6 +6,7 @@ import { selectPaginatedEmployees } from "../../features/employee/employeeSelect
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { setCurrentPage } from "@/app/features/employee/employeeSlice";
+import Spinner from "../Spinner";
 
 const columns = [
   { header: "Name", accessor: "name" },
@@ -31,6 +32,11 @@ export default function EmployeeTable() {
     }
     dispatch(setCurrentPage(1));
   };
+  const { loading } = useAppSelector((state) => state.employee);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="w-6xl bg-white rounded-xl shadow-lg overflow-x-auto">

@@ -1,9 +1,14 @@
 import { selectFilteredDesignation } from "@/app/features/designation/designationSelectors";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import DesignationRow from "./DesignationRow";
-
+import Spinner from "../Spinner";
 export default function DesignationTable() {
   const paginatedDesignations = useAppSelector(selectFilteredDesignation);
+  const { loading } = useAppSelector((state) => state.employee);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="w-4xl bg-white rounded-xl shadow-lg">

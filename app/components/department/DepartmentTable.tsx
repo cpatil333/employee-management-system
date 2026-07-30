@@ -1,9 +1,15 @@
 import { selectFilteredDepartment } from "@/app/features/department/departmentSelectors";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import DepartmentRow from "./DepartmentRow";
+import Spinner from "../Spinner";
 
 export default function DepartmentTable() {
   const paginatedDeparments = useAppSelector(selectFilteredDepartment);
+  const { loading } = useAppSelector((state) => state.employee);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="w-4xl bg-white rounded-xl shadow-lg">
