@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import styles from "../module/common.module.css";
 import { useAppSelector } from "../hooks/useAppSelector";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/ui/Spinner";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { forgotPasswordAsync } from "../features/auth/authSlice";
 import { useRouter } from "next/navigation";

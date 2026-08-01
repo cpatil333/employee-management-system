@@ -3,6 +3,7 @@
 import { setDesignationDetailModal } from "@/app/features/designation/designationSlice";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
+import Modal from "../ui/Modal";
 
 export default function DesignationViewModal() {
   const dispatch = useAppDispatch();
@@ -12,28 +13,12 @@ export default function DesignationViewModal() {
   );
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white max-w-xl w-full h-[30vh] rounded-xl shadow-xl ">
-        <div className="flex items-center justify-center border-2 p-2">
-          <h2 className="text-2xl font-semibold text-blue-700">
-            Designation Details
-          </h2>
-        </div>
-        <div className="flex flex-col ml-20 mt-5 font-semibold text-xl p-2">
-          <div className="border-t pt-6">
-            <DetailRows label="Name" value={selectedDesignation?.name} />
-          </div>
-          <div className="w-full flex items-center justify-center">
-            <button
-              className="bg-blue-700 text-xl text-white p-2 m-2"
-              onClick={() => dispatch(setDesignationDetailModal(false))}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal
+      title="Designation Details"
+      onClose={() => dispatch(setDesignationDetailModal(false))}
+    >
+      <DetailRows label="Designation" value={selectedDesignation?.name} />
+    </Modal>
   );
 }
 

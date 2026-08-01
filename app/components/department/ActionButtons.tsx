@@ -19,11 +19,11 @@ export default function ActionButtons({ departmentId }: ActionButtonsProps) {
   const dispatch = useAppDispatch();
 
   const isDeleteModalOpen = useAppSelector(
-    (state) => state.designation.isDeleteModalOpen,
+    (state) => state.department.isDeleteModalOpen,
   );
 
   const designationDetailModal = useAppSelector(
-    (state) => state.designation.designationDetailModal,
+    (state) => state.department.departmentDetailModal,
   );
 
   const handleEdit = () => {
@@ -33,7 +33,6 @@ export default function ActionButtons({ departmentId }: ActionButtonsProps) {
 
   const handleView = () => {
     dispatch(setDepartmentDetailModal(true));
-    //dispatch(setSelectedEmployee(employeeId));
     dispatch(fetchDepartmentById(departmentId));
   };
 

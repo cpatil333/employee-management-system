@@ -232,6 +232,16 @@ export const EmployeeSlice = createSlice({
     setIsDeleteModalOpen(state, action: PayloadAction<boolean>) {
       state.isDeleteModalOpen = action.payload;
     },
+    setSort(
+      state,
+      action: PayloadAction<{
+        field: SortField;
+        order: "asc" | "desc";
+      }>,
+    ) {
+      state.sortField = action.payload.field;
+      state.sortOrder = action.payload.order;
+    },
   },
 
   extraReducers(addBuilder) {
@@ -362,6 +372,7 @@ export const {
   setSelectedDepartment,
   setSelectedDesignation,
   setSelectedStatus,
+  setSort,
 } = EmployeeSlice.actions;
 export {
   fetchEmployees,

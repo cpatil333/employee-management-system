@@ -1,11 +1,36 @@
-import { selectFilteredDepartment } from "@/app/features/department/departmentSelectors";
+import {
+  selectFilteredDepartment,
+  selectPaginatedDepartments,
+} from "@/app/features/department/departmentSelectors";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import DepartmentRow from "./DepartmentRow";
-import Spinner from "../Spinner";
+import Spinner from "../ui/Spinner";
+
+import {
+  setCurrentPage,
+  setSort,
+} from "@/app/features/department/departmentSlice";
+import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 
 export default function DepartmentTable() {
-  const paginatedDeparments = useAppSelector(selectFilteredDepartment);
-  const { loading } = useAppSelector((state) => state.employee);
+  const dispatch = useAppDispatch();
+  const paginatedDeparments = useAppSelector(selectPaginatedDepartments);
+
+  const { loading } = useAppSelector((state) => state.department);
+  const { sortField, sortOrder } = useAppSelector((state) => state.department);
+
+  const handleSort = (field: "name") => {
+    const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";
+
+    dispatch(
+      setSort({
+        field,
+        order,
+      }),
+    );
+
+    dispatch(setCurrentPage(1));
+  };
 
   if (loading) {
     return <Spinner />;
@@ -16,7 +41,10 @@ export default function DepartmentTable() {
       <table className="w-4xl bg-white text-black text-[16px]">
         <thead className="bg-blue-950 text-white">
           <tr className="bg-black text-white border-2">
-            <th className="w-xl">Department Name</th>
+            <th onClick={() => handleSort("name")}>
+              Name
+              {sortField === "name" && (sortOrder === "asc" ? " ▲" : " ▼")}
+            </th>
             <th>Action</th>
           </tr>
         </thead>

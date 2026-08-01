@@ -8,7 +8,7 @@ import { fetchLoginAsyc } from "../features/auth/authSlice";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "../hooks/useAppSelector";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/ui/Spinner";
 import Link from "next/link";
 
 export default function LoginPage() {

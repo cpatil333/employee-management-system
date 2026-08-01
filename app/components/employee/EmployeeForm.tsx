@@ -13,12 +13,15 @@ import {
   updateEmployeeAsync,
 } from "@/app/features/employee/employeeSlice";
 import toast from "react-hot-toast";
-import Spinner from "../Spinner";
+import Spinner from "../ui/Spinner";
 import {
   fetchCitiesByStateId,
   fetchCountries,
   fetchStatesByCountryId,
-} from "@/app/features/employee/locationSlice";
+} from "@/app/features/location/locationSlice";
+import Input from "../ui/Input";
+import { error } from "console";
+import Select from "../ui/Select";
 
 export default function EmployeeForm() {
   const dispatch = useAppDispatch();
@@ -194,83 +197,50 @@ export default function EmployeeForm() {
             </h3>
             <hr className="w-100" />
             <div>
-              <label className="font-bold">Name : </label>
-              <input
+              <Input
+                label="Name:"
                 type="text"
-                className="border-2 w-100 outline-none p-1 m-1"
-                {...register("name", { required: "Name is required" })}
+                placeholder="Enter Name"
+                error={errors.name?.message}
+                {...register("name")}
               />
-              {errors.name && (
-                <p className="text-red-700">{errors.name.message}</p>
-              )}
             </div>
             <div>
-              <label className="font-bold">Email : </label>
-              <input
+              <Input
+                label="Email"
                 type="email"
-                className="border-2 w-100 outline-none p-1 m-1"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^\S+@\S+\.\S+$/,
-                    message: "Invalid email",
-                  },
-                })}
+                placeholder="Enter Email"
+                error={errors.email?.message}
+                {...register("email")}
               />
-              {errors.email && (
-                <p className="text-red-700">{errors.email.message}</p>
-              )}
             </div>
             <div>
-              <label className="font-bold">Password : </label>
-              <input
+              <Input
+                label="Password"
                 type="password"
-                className="border-2 w-100 outline-none p-1 m-1"
-                {...register("password", {
-                  required: "password is required",
-                  pattern: {
-                    value:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                    message:
-                      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
-                  },
-                })}
+                placeholder="Enter Password"
+                error={errors.password?.message}
+                {...register("password")}
               />
-              {errors.password && (
-                <p className="text-red-700">{errors.password.message}</p>
-              )}
             </div>
             <div>
-              <label className="font-bold">Phone : </label>
-              <input
+              <Input
+                label="Phone"
                 type="text"
-                className="border-2 w-100 outline-none p-1 m-1"
-                {...register("phone", {
-                  required: "Phone is required",
-                  pattern: {
-                    value: /^[0-9]{10}$/,
-                    message: "Phone number must be containt 10 digits",
-                  },
-                })}
+                placeholder="Enter Phone Number"
+                error={errors.phone?.message}
+                {...register("phone")}
               />
-              {errors.phone && (
-                <p className="text-red-700">{errors.phone.message}</p>
-              )}
             </div>
             <div>
-              <label className="font-bold">Employee Role : </label>
-              <select
-                className="border-2 w-50 outline-none p-1 m-1"
-                {...register("role", {
-                  required: "user role is required",
-                })}
+              <Select
+                label="Employee Role"
+                error={errors.role?.message}
+                {...register("role")}
               >
                 <option className="Admin">Admin</option>
                 <option className="Employee">Employee</option>
-              </select>
-              {errors.role && (
-                <p className="text-red-700">{errors.role.message}</p>
-              )}
+              </Select>
             </div>
             <div>
               <label className="font-bold">Gender : </label>
@@ -316,17 +286,10 @@ export default function EmployeeForm() {
             </h3>
             <hr className="w-100" />
             <div>
-              <label className="font-bold">Department : </label>
-              <select
-                value={selectedDepartment}
-                className="border-2 w-50 outline-none p-1 m-1"
-                {...register("departmentId", {
-                  validate: () =>
-                    selectedDepartment !== 0 || "Department is required",
-                  onChange: (e) => {
-                    setSelecteDepartment(Number(e.target.value));
-                  },
-                })}
+              <Select
+                label="Department"
+                error={errors.departmentId?.message}
+                {...register("departmentId")}
               >
                 <option value={0}>Select</option>
                 {departmentList.map((dept) => (
@@ -334,23 +297,13 @@ export default function EmployeeForm() {
                     {dept.name}
                   </option>
                 ))}
-              </select>
-              {errors.departmentId && (
-                <p className="text-red-700">{errors.departmentId.message}</p>
-              )}
+              </Select>
             </div>
             <div>
-              <label className="font-bold">Designation : </label>
-              <select
-                value={selectedDesignation}
-                className="border-2 w-50 outline-none p-1 m-1"
-                {...register("designationId", {
-                  validate: () =>
-                    selectedDesignation !== 0 || "Designation is required",
-                  onChange: (e) => {
-                    setSelectedDesignation(Number(e.target.value));
-                  },
-                })}
+              <Select
+                label="Designation"
+                error={errors.designationId?.message}
+                {...register("designationId")}
               >
                 <option value={0}>Select</option>
                 {designationtList.map((desg) => (
@@ -358,38 +311,25 @@ export default function EmployeeForm() {
                     {desg.name}
                   </option>
                 ))}
-              </select>
-              {errors.designationId && (
-                <p className="text-red-700">{errors.designationId.message}</p>
-              )}
+              </Select>
             </div>
             <div>
-              <label className="font-bold">Joining Date : </label>
-              <input
+              <Input
+                label="JoiningDatae"
                 type="date"
-                max={new Date().toISOString().split("T")[0]}
-                className="border-2 w-100 outline-none p-1 m-1"
-                {...register("joiningDate", {
-                  required: "Joining Date is required",
-                })}
+                placeholder="Enter Joining Date"
+                error={errors.joiningDate?.message}
+                {...register("joiningDate")}
               />
-              {errors.joiningDate && (
-                <p className="text-red-700">{errors.joiningDate.message}</p>
-              )}
             </div>
             <div>
-              <label className="font-bold">Salary : </label>
-              <input
+              <Input
+                label="Salary"
                 type="number"
-                className="border-2 w-100 outline-none p-1 m-1"
-                {...register("salary", {
-                  valueAsNumber: true,
-                  required: "Salary is required",
-                })}
+                placeholder="Enter Salary"
+                error={errors.salary?.message}
+                {...register("salary")}
               />
-              {errors.salary && (
-                <p className="text-red-700">{errors.salary.message}</p>
-              )}
             </div>
             <div>
               <label className="font-bold">Status : </label>
@@ -416,28 +356,24 @@ export default function EmployeeForm() {
             <h3 className="mt-5 text-2xl font-bold underline">Address</h3>
             <hr className="w-100" />
             <div>
-              <label className="font-bold">Address Line 1 : </label>
-              <input
+              <Input
+                label="Address1"
                 type="text"
-                className="border-2 w-100 outline-none p-1 m-1"
-                {...register("address1", {
-                  required: "Address Line 1 is required",
-                })}
+                placeholder="Enter Address1"
+                error={errors.address1?.message}
+                {...register("address1")}
               />
-              {errors.address1 && (
-                <p className="text-red-700">{errors.address1.message}</p>
-              )}
             </div>
             <div>
-              <label className="font-bold">Address Line 2 : </label>
-              <input
+              <Input
+                label="Address2"
                 type="text"
-                className="border-2 w-100 outline-none p-1 m-1"
+                placeholder="Enter Address2"
                 {...register("address2")}
               />
             </div>
             <div>
-              <label className="font-bold">Country : </label>
+              {/* <label className="font-bold">Country : </label>
               <select
                 value={selectedCountry}
                 className="border-2 w-50 outline-none p-1 m-1"
@@ -460,10 +396,28 @@ export default function EmployeeForm() {
               </select>
               {errors.countryId && (
                 <p className="text-red-700">{errors.countryId.message}</p>
-              )}
+              )} */}
+
+              <Select
+                label="Country"
+                error={errors.countryId?.message}
+                {...register("countryId", {
+                  onChange: (e) => {
+                    const id = Number(e.target.value);
+                    handleCountry(id);
+                  },
+                })}
+              >
+                <option value={0}>Select</option>
+                {countryList.map((country) => (
+                  <option key={country.id} value={country.id}>
+                    {country.name}
+                  </option>
+                ))}
+              </Select>
             </div>
             <div>
-              <label className="font-bold">State : </label>
+              {/* <label className="font-bold">State : </label>
               <select
                 value={selectedStateId}
                 className="border-2 w-50 outline-none p-1 m-1"
@@ -485,10 +439,27 @@ export default function EmployeeForm() {
               </select>
               {errors.stateId && (
                 <p className="text-red-700">{errors.stateId.message}</p>
-              )}
+              )} */}
+              <Select
+                label="State"
+                error={errors.stateId?.message}
+                {...register("stateId", {
+                  onChange: (e) => {
+                    const id = Number(e.target.value);
+                    handleState(id);
+                  },
+                })}
+              >
+                <option value={0}>Select State</option>
+                {filteredStates.map((state) => (
+                  <option key={state.id} value={state.id}>
+                    {state.name}
+                  </option>
+                ))}
+              </Select>
             </div>
             <div>
-              <label className="font-bold">City : </label>
+              {/* <label className="font-bold">City : </label>
               <select
                 value={selectedCityId}
                 className="border-2 w-50 outline-none p-1 m-1"
@@ -508,33 +479,39 @@ export default function EmployeeForm() {
               </select>
               {errors.cityId && (
                 <p className="text-red-700">{errors.cityId.message}</p>
-              )}
+              )} */}
+              <Select
+                label="City"
+                error={errors.cityId?.message}
+                {...register("cityId")}
+              >
+                <option value={0}>Select</option>
+                {filteredCities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
+                ))}
+              </Select>
             </div>
           </div>
           <div>
-            <label className="font-bold">Pincode : </label>
-            <input
+            <Input
+              label="Pincode"
               type="text"
-              className="border-2 w-100 outline-none p-1 m-1"
-              {...register("pincode", {
-                required: "Pincode is required",
-                pattern: {
-                  value: /^[0-9]{6}$/,
-                  message: "Invalid pincode",
-                },
-              })}
+              placeholder="Enter Pincode"
+              error={errors.pincode?.message}
+              {...register("pincode")}
             />
           </div>
           <div>
             <label className="font-bold">Profile : </label>
             <div className="flex items-center gap-4">
-              <input
+              <Input
+                label="Profile"
                 type="file"
-                className="border-2 w-100 outline-none p-1 m-1"
+                placeholder="choose file.."
+                error={errors.profileImage?.message}
                 {...register("profileImage", {
-                  required: !selectedEmployee
-                    ? "Profile Image is required"
-                    : false,
                   onChange: (e) => {
                     const file = e.target.files?.[0];
                     if (file) {

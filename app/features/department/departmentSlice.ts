@@ -24,6 +24,8 @@ type DepartmentState = {
   isDeleteModalOpen: boolean;
   currentPage: number;
   perPage: number;
+  sortField: "name";
+  sortOrder: "asc" | "desc";
 };
 const initialState: DepartmentState = {
   departmentList: [],
@@ -37,6 +39,8 @@ const initialState: DepartmentState = {
   isDeleteModalOpen: false,
   currentPage: 1,
   perPage: 5,
+  sortField: "name",
+  sortOrder: "asc",
 };
 
 const fetchDepartments = createAsyncThunk(
@@ -158,6 +162,16 @@ export const DepartmentSlice = createSlice({
     setIsDeleteModalOpen(state, action: PayloadAction<boolean>) {
       state.isDeleteModalOpen = action.payload;
     },
+    setSort: (
+      state,
+      action: PayloadAction<{
+        field: "name";
+        order: "asc" | "desc";
+      }>,
+    ) => {
+      state.sortField = action.payload.field;
+      state.sortOrder = action.payload.order;
+    },
   },
   extraReducers(addBuilder) {
     addBuilder.addCase(fetchDepartments.pending, (state, action) => {
@@ -248,6 +262,7 @@ export const {
   previousPage,
   setIsModalOpen,
   setIsDeleteModalOpen,
+  setSort,
 } = DepartmentSlice.actions;
 export {
   fetchDepartments,

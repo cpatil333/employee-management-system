@@ -1,38 +1,25 @@
 "use client";
 import { setDepartmentDetailModal } from "@/app/features/department/departmentSlice";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import Modal from "../ui/Modal";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 
 export default function DepartmentViewModal() {
+  console.log("DepartmentViewModal Rendered");
   const dispatch = useAppDispatch();
 
   const selectedDepartment = useAppSelector(
     (state) => state.department.selectedDepartment,
   );
 
+  console.log(selectedDepartment);
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white max-w-xl w-full h-[30vh] rounded-xl shadow-xl ">
-        <div className="flex items-center justify-center border-2 p-2">
-          <h2 className="text-2xl font-semibold text-blue-700">
-            Department Details
-          </h2>
-        </div>
-        <div className="flex flex-col ml-20 mt-5 font-semibold text-xl p-2">
-          <div className="border-t pt-6">
-            <DetailRows label="Name" value={selectedDepartment?.name} />
-          </div>
-          <div className="w-full flex items-center justify-center">
-            <button
-              className="bg-blue-700 text-xl text-white p-2 m-2"
-              onClick={() => dispatch(setDepartmentDetailModal(false))}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal
+      title="Department Details"
+      onClose={() => dispatch(setDepartmentDetailModal(false))}
+    >
+      <DetailRows label="Department" value={selectedDepartment?.name} />
+    </Modal>
   );
 }
 

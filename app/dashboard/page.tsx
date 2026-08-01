@@ -5,8 +5,14 @@ import { useAppSelector } from "../hooks/useAppSelector";
 import { RootState } from "../store/store";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { fetchEmployees } from "../features/employee/employeeSlice";
+import DashboardCard from "../components/ui/DashboardCard";
 
-export default function DashboardPage() {
+type DashboardCardProps = {
+  title: string;
+  value: number;
+};
+
+export default function DashboardPage({ title, value }: DashboardCardProps) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -42,28 +48,8 @@ export default function DashboardPage() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
       {dashboard.map((dash) => (
-        <Cards
-          key={dash.title}
-          title={dash.title}
-          value={dash.value.toString()}
-        />
+        <DashboardCard key={dash.title} title={dash.title} value={dash.value} />
       ))}
-    </div>
-  );
-}
-
-type CardsProps = {
-  title: string;
-  value: string;
-};
-
-function Cards({ title, value }: CardsProps) {
-  return (
-    <div key={title}>
-      <div className="text-center justify-center bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 border-t-4 border-blue-600">
-        <p className="text-gray-500 text-sm font-semibold">{title}</p>
-        <p className="text-4xl text-black font-bold">{value}</p>
-      </div>
     </div>
   );
 }

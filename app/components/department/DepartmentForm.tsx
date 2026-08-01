@@ -12,6 +12,10 @@ import {
 } from "@/app/features/department/departmentSlice";
 import toast from "react-hot-toast";
 import { Department } from "@/app/types/department.types";
+import Input from "../ui/Input";
+import { error } from "console";
+import Button from "../ui/Button";
+import Spinner from "../ui/Spinner";
 
 export default function DepartmentForm() {
   const dispatch = useAppDispatch();
@@ -25,7 +29,7 @@ export default function DepartmentForm() {
       name: "",
     },
   });
-  const { loading } = useAppSelector((state) => state.employee);
+  const { loading } = useAppSelector((state) => state.department);
 
   const selectedDepartment = useAppSelector(
     (state) => state.department.selectedDepartment,
@@ -66,6 +70,10 @@ export default function DepartmentForm() {
     }
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <>
       <div className="h-[50vh] p-6 text-black">
@@ -74,32 +82,26 @@ export default function DepartmentForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="font-bold">Name : </label>
-              <input
+              <Input
+                label="Name :"
                 type="text"
-                className="border-2 w-100 outline-none p-1 m-1"
-                {...register("name", { required: "Name is required" })}
+                placeholder="Enter Name"
+                error={errors.name?.message}
+                {...register("name")}
               />
-              {errors.name && (
-                <p className="text-red-700">{errors.name.message}</p>
-              )}
             </div>
           </div>
-          <div className="text-center justify-center">
-            <button
+          <div className="flex gap-4 mt-6">
+            <Button
               onClick={() => dispatch(setIsModalOpen(false))}
+              className="flex-1 bg-gray-500"
               type="button"
-              className="bg-blue-700 text-xl text-white p-2 m-2"
             >
               Close
-            </button>
-            <button
-              disabled={loading}
-              type="submit"
-              className="bg-blue-700  text-xl text-white p-2 m-2"
-            >
+            </Button>
+            <Button type="submit" className="flex-1">
               {loading ? "Saving..." : "Save Department"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

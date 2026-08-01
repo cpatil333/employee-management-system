@@ -8,7 +8,7 @@ import {
   fetchCitiesByStateId,
   fetchCountries,
   fetchStatesByCountryId,
-} from "@/app/features/employee/locationSlice";
+} from "@/app/features/location/locationSlice";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import { useEffect, useState } from "react";
