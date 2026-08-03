@@ -1,9 +1,7 @@
 "use client";
-import {
-  fetchDepartments,
-  fetchDesignations,
-  setEmployeeDetailModal,
-} from "@/app/features/employee/employeeSlice";
+import { fetchDepartments } from "@/app/features/department/departmentSlice";
+import { fetchDesignations } from "@/app/features/designation/designationSlice";
+import { setEmployeeDetailModal } from "@/app/features/employee/employeeSlice";
 import {
   fetchCitiesByStateId,
   fetchCountries,
@@ -39,11 +37,11 @@ export default function EmployeeDetailModal() {
   }, [dispatch, selectedEmployee]);
 
   const departmentList = useAppSelector(
-    (state) => state.employee.departmentList,
+    (state) => state.department.departmentList,
   );
 
   const designationtList = useAppSelector(
-    (state) => state.employee.designationList,
+    (state) => state.designation.designationList,
   );
 
   const countryList = useAppSelector((state) => state.location.countryList);

@@ -7,6 +7,9 @@ import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { setCurrentPage } from "@/app/features/employee/employeeSlice";
 import Spinner from "../ui/Spinner";
 import { setSort } from "@/app/features/employee/employeeSlice";
+import { fetchDepartments } from "@/app/features/department/departmentSlice";
+import { fetchDesignations } from "@/app/features/designation/designationSlice";
+import { useEffect } from "react";
 
 export default function EmployeeTable() {
   const dispatch = useAppDispatch();
@@ -14,6 +17,11 @@ export default function EmployeeTable() {
   const { sortField, sortOrder } = useAppSelector((state) => state.employee);
 
   const paginatedEmployees = useAppSelector(selectPaginatedEmployees);
+
+  useEffect(() => {
+    dispatch(fetchDepartments());
+    dispatch(fetchDesignations());
+  }, [dispatch]);
 
   const handleSort = (field: SortField) => {
     const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";

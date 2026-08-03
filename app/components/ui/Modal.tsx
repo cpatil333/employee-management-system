@@ -4,12 +4,18 @@ type ModalProps = {
   title: string;
   children: React.ReactNode;
   onClose: () => void;
+  className?: string;
 };
 
-export default function Modal({ title, children, onClose }: ModalProps) {
+export default function Modal({
+  title,
+  children,
+  onClose,
+  className,
+}: ModalProps) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl">
+      <div className={`bg-white rounded-xl shadow-xl w-full ${className}`}>
         {/* Header */}
         <div className="flex justify-between items-center border-b p-4">
           <h2 className="text-2xl font-bold text-blue-700">{title}</h2>

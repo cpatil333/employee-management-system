@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect,} from "react";
+import { useEffect } from "react";
 import EmployeeTable from "../components/employee/EmployeeTableHeader";
 import EmployeeToolbar from "../components/employee/EmployeeToolbar";
 import Pagination from "../components/employee/EmployeePagination";

@@ -1,18 +1,18 @@
 import { InputHTMLAttributes } from "react";
 
-type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+type TextAreaProps = InputHTMLAttributes<HTMLTextAreaElement> & {
   label: string;
   error?: string;
 };
 
-export default function Input({ label, error, ...props }: InputProps) {
+export default function TextArea({ label, error, ...props }: TextAreaProps) {
   return (
     <div className="mb-4">
       <label className="font-semibold text-black">{label}</label>
 
-      <input
+      <textarea
         {...props}
-        className="w-full text-black border rounded-md p-2 mt-1"
+        className="w-full border rounded-md p-2 mt-1 resize-none"
       />
 
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}

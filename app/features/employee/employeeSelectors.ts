@@ -1,10 +1,15 @@
-import { department } from "@/app/data/department";
-import { designation } from "@/app/data/designation";
 import { RootState } from "@/app/store/store";
 import { Employee } from "@/app/types/empoyee.types";
 import { createSelector } from "@reduxjs/toolkit";
 
 export const selectEmployeeState = (state: RootState) => state.employee;
+export const selectDepartmentState = (state: RootState) => state.department;
+export const selectDesignatonState = (state: RootState) => state.designation;
+
+export type EmployeeView = Employee & {
+  departmentName: string;
+  designationName: string;
+};
 
 export const selectFilteredEmployees = createSelector(
   [selectEmployeeState],
@@ -39,33 +44,52 @@ export const selectFilteredEmployees = createSelector(
   },
 );
 
+export const selectEmployeeWithNames = createSelector(
+  [selectFilteredEmployees, selectDepartmentState, selectDesignatonState],
+  (employees, departmentState, designationState): EmployeeView[] => {
+    return employees.map((emp) => ({
+      ...emp,
+
+      departmentName:
+        departmentState.departmentList.find((d) => d.id === emp.departmentId)
+          ?.name ?? "",
+
+      designationName:
+        designationState.designationList.find((d) => d.id === emp.designationId)
+          ?.name ?? "",
+    }));
+  },
+);
+
+// Sort selector
 export const selectSortedEmployees = createSelector(
-  [selectFilteredEmployees, selectEmployeeState],
-  (filteredEmployees, employeeState) => {
+  [selectEmployeeWithNames, selectEmployeeState],
+  (employees, employeeState) => {
     const { sortField, sortOrder } = employeeState;
-    const sorted = [...filteredEmployees];
+
+    const sorted = [...employees];
 
     const sortFunctions = {
-      name: (e: Employee) => e.name,
-      email: (e: Employee) => e.email,
-      department: (e: Employee) =>
-        department.find((d) => d.id === e.departmentId)?.name ?? "",
-      designation: (e: Employee) =>
-        designation.find((d) => d.id === e.designationId)?.name ?? "",
-      status: (e: Employee) => e.status,
+      name: (e: EmployeeView) => e.name,
+      email: (e: EmployeeView) => e.email,
+      department: (e: EmployeeView) => e.departmentName,
+      designation: (e: EmployeeView) => e.designationName,
+      status: (e: EmployeeView) => e.status,
     };
-    sorted.sort((a, b) => {
-      const valueA = sortFunctions[sortField](a);
-      const valueB = sortFunctions[sortField](b);
 
-      const comparison = valueA.localeCompare(valueB);
+    sorted.sort((a, b) => {
+      const comparison = sortFunctions[sortField](a).localeCompare(
+        sortFunctions[sortField](b),
+      );
 
       return sortOrder === "asc" ? comparison : -comparison;
     });
+
     return sorted;
   },
 );
 
+// Pagination selector
 export const selectPaginatedEmployees = createSelector(
   [selectSortedEmployees, selectEmployeeState],
   (sortedEmployees, employeeState) => {

@@ -6,22 +6,23 @@ import { useAppSelector } from "@/app/hooks/useAppSelector";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import {
   addEmployeeAsync,
-  fetchDepartments,
-  fetchDesignations,
   fetchEmployees,
   setIsModalOpen,
   updateEmployeeAsync,
 } from "@/app/features/employee/employeeSlice";
 import toast from "react-hot-toast";
-import Spinner from "../ui/Spinner";
 import {
   fetchCitiesByStateId,
   fetchCountries,
   fetchStatesByCountryId,
 } from "@/app/features/location/locationSlice";
 import Input from "../ui/Input";
-import { error } from "console";
 import Select from "../ui/Select";
+import RadioGroup from "../ui/RadioGroup";
+import { employeeValidation } from "@/app/validation/employeeValidation";
+import TextArea from "../ui/TextArea";
+import { fetchDepartments } from "@/app/features/department/departmentSlice";
+import { fetchDesignations } from "@/app/features/designation/designationSlice";
 
 export default function EmployeeForm() {
   const dispatch = useAppDispatch();
@@ -29,6 +30,7 @@ export default function EmployeeForm() {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<Employee>({
     defaultValues: {
@@ -55,12 +57,7 @@ export default function EmployeeForm() {
     },
   });
 
-  const [selectedDepartment, setSelecteDepartment] = useState(0);
-  const [selectedDesignation, setSelectedDesignation] = useState(0);
   const [preview, setPreview] = useState<string | null>(null);
-  const [selectedCountry, setSelectedCountry] = useState(0);
-  const [selectedStateId, setSelectedStateId] = useState(0);
-  const [selectedCityId, setSelectedCityId] = useState(0);
 
   useEffect(() => {
     dispatch(fetchDepartments());
@@ -74,36 +71,12 @@ export default function EmployeeForm() {
     (state) => state.employee.selectedEmployee,
   );
 
-  useEffect(() => {
-    if (selectedEmployee) {
-      reset({
-        ...selectedEmployee,
-        joiningDate: selectedEmployee.joiningDate.split("T")[0],
-      });
-
-      setPreview(selectedEmployee.profileImage);
-
-      // setPreview(
-      //   `http://localhost:5000/uploads/${selectedEmployee.profileImage}`,
-      // );
-      setSelecteDepartment(selectedEmployee.departmentId);
-      setSelectedDesignation(selectedEmployee.designationId);
-
-      setSelectedCountry(selectedEmployee.countryId);
-      setSelectedStateId(selectedEmployee.stateId);
-      setSelectedCityId(selectedEmployee.cityId);
-
-      handleCountry(selectedEmployee.countryId);
-      handleState(selectedEmployee?.stateId);
-    }
-  }, [selectedEmployee, reset]);
-
   const departmentList = useAppSelector(
-    (state) => state.employee.departmentList,
+    (state) => state.department.departmentList,
   );
 
   const designationtList = useAppSelector(
-    (state) => state.employee.designationList,
+    (state) => state.designation.designationList,
   );
 
   const countryList = useAppSelector((state) => state.location.countryList);
@@ -111,6 +84,59 @@ export default function EmployeeForm() {
   const filteredStates = useAppSelector((state) => state.location.stateList);
 
   const filteredCities = useAppSelector((state) => state.location.cityList);
+  //fill State dropdown list
+  const handleCountry = (countryId: number) => {
+    dispatch(fetchStatesByCountryId(countryId));
+  };
+
+  //fill city dropdown list
+  const handleState = (stateId: number) => {
+    dispatch(fetchCitiesByStateId(stateId));
+  };
+
+  //get selected file
+  useEffect(() => {
+    if (!selectedEmployee) return;
+
+    reset({
+      ...selectedEmployee,
+      joiningDate: selectedEmployee.joiningDate.split("T")[0],
+    });
+
+    setPreview(selectedEmployee.profileImage);
+
+    handleCountry(selectedEmployee.countryId);
+  }, [selectedEmployee, reset]);
+
+  //get department if found
+  useEffect(() => {
+    if (selectedEmployee && departmentList.length > 0) {
+      setValue("departmentId", selectedEmployee.departmentId);
+    }
+  }, [departmentList, selectedEmployee, setValue]);
+
+  //get desigation if found
+  useEffect(() => {
+    if (selectedEmployee && designationtList.length > 0) {
+      setValue("designationId", selectedEmployee.designationId);
+    }
+  }, [designationtList, selectedEmployee, setValue]);
+
+  //get state if selected found stateid
+  useEffect(() => {
+    if (selectedEmployee && filteredStates.length > 0) {
+      setValue("stateId", selectedEmployee.stateId);
+
+      handleState(selectedEmployee.stateId);
+    }
+  }, [filteredStates, selectedEmployee, setValue]);
+
+  //get city if selected found cityid
+  useEffect(() => {
+    if (selectedEmployee && filteredCities.length > 0) {
+      setValue("cityId", selectedEmployee.cityId);
+    }
+  }, [filteredCities, selectedEmployee, setValue]);
 
   const onSubmit = async (data: Employee) => {
     try {
@@ -175,16 +201,6 @@ export default function EmployeeForm() {
     }
   };
 
-  //fill State dropdown list
-  const handleCountry = (countryId: number) => {
-    dispatch(fetchStatesByCountryId(countryId));
-  };
-
-  //fill city dropdown list
-  const handleState = (stateId: number) => {
-    dispatch(fetchCitiesByStateId(stateId));
-  };
-
   return (
     <>
       <div className="h-[calc(90vh-72px)] overflow-y-auto p-6 text-black">
@@ -202,7 +218,7 @@ export default function EmployeeForm() {
                 type="text"
                 placeholder="Enter Name"
                 error={errors.name?.message}
-                {...register("name")}
+                {...register("name", employeeValidation.name)}
               />
             </div>
             <div>
@@ -211,7 +227,7 @@ export default function EmployeeForm() {
                 type="email"
                 placeholder="Enter Email"
                 error={errors.email?.message}
-                {...register("email")}
+                {...register("email", employeeValidation.email)}
               />
             </div>
             <div>
@@ -220,7 +236,7 @@ export default function EmployeeForm() {
                 type="password"
                 placeholder="Enter Password"
                 error={errors.password?.message}
-                {...register("password")}
+                {...register("password", employeeValidation.password)}
               />
             </div>
             <div>
@@ -229,55 +245,47 @@ export default function EmployeeForm() {
                 type="text"
                 placeholder="Enter Phone Number"
                 error={errors.phone?.message}
-                {...register("phone")}
+                {...register("phone", employeeValidation.phone)}
               />
             </div>
             <div>
               <Select
                 label="Employee Role"
                 error={errors.role?.message}
-                {...register("role")}
+                {...register("role", {
+                  required: "Role is required",
+                })}
               >
-                <option className="Admin">Admin</option>
-                <option className="Employee">Employee</option>
+                <option value="">Select</option>
+                <option value="Admin">Admin</option>
+                <option value="Employee">Employee</option>
               </Select>
             </div>
             <div>
-              <label className="font-bold">Gender : </label>
-              <input
-                type="radio"
-                className="p-1 m-2"
-                value="Male"
-                {...register("gender")}
+              <RadioGroup
+                label="Gender"
+                name="gender"
+                options={[
+                  { label: "Male", value: "Male" },
+                  { label: "Female", value: "Female" },
+                ]}
+                register={register}
+                error={errors.gender?.message}
               />
-              Male
-              <input
-                type="radio"
-                className="p-1 m-2"
-                value="Female"
-                {...register("gender")}
-              />
-              Female
-              {errors.gender && (
-                <p className="text-red-700">{errors.gender.message}</p>
-              )}
             </div>
             <div>
-              <label className="font-bold">Marital Status : </label>
-              <select
-                className="border-2 w-50 outline-none p-1 m-1"
+              <Select
+                label="Marital Status"
+                error={errors.maritalStatus?.message}
                 {...register("maritalStatus", {
                   required: "Marital Status is required",
                 })}
               >
-                <option className="married">Married</option>
-                <option className="unmarried">Unmarried</option>
-                <option className="single">Single</option>
-                <option className="divorce">Divorce</option>
-              </select>
-              {errors.maritalStatus && (
-                <p className="text-red-700">{errors.maritalStatus.message}</p>
-              )}
+                <option value="married">Married</option>
+                <option value="unmarried">Unmarried</option>
+                <option value="single">Single</option>
+                <option value="divorce">Divorce</option>
+              </Select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -289,7 +297,11 @@ export default function EmployeeForm() {
               <Select
                 label="Department"
                 error={errors.departmentId?.message}
-                {...register("departmentId")}
+                {...register("departmentId", {
+                  valueAsNumber: true,
+                  validate: (value) =>
+                    value !== 0 || employeeValidation.departmentId.required,
+                })}
               >
                 <option value={0}>Select</option>
                 {departmentList.map((dept) => (
@@ -303,7 +315,11 @@ export default function EmployeeForm() {
               <Select
                 label="Designation"
                 error={errors.designationId?.message}
-                {...register("designationId")}
+                {...register("designationId", {
+                  valueAsNumber: true,
+                  validate: (value) =>
+                    value !== 0 || employeeValidation.designationId.required,
+                })}
               >
                 <option value={0}>Select</option>
                 {designationtList.map((desg) => (
@@ -319,7 +335,7 @@ export default function EmployeeForm() {
                 type="date"
                 placeholder="Enter Joining Date"
                 error={errors.joiningDate?.message}
-                {...register("joiningDate")}
+                {...register("joiningDate", employeeValidation.joiningDate)}
               />
             </div>
             <div>
@@ -328,80 +344,50 @@ export default function EmployeeForm() {
                 type="number"
                 placeholder="Enter Salary"
                 error={errors.salary?.message}
-                {...register("salary")}
+                {...register("salary", employeeValidation.salary)}
               />
             </div>
             <div>
-              <label className="font-bold">Status : </label>
-              <input
-                type="radio"
-                value="Active"
-                className="p-1 m-2"
-                {...register("status")}
+              <RadioGroup
+                label="Status"
+                name="status"
+                options={[
+                  { label: "Active", value: "Active" },
+                  { label: "InActive", value: "Inactive" },
+                ]}
+                register={register}
+                error={errors.status?.message}
               />
-              Active
-              <input
-                type="radio"
-                value="Inactive"
-                className="p-1 m-2"
-                {...register("status")}
-              />
-              Inactive
-              {errors.status && (
-                <p className="text-red-700">{errors.status.message}</p>
-              )}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <h3 className="mt-5 text-2xl font-bold underline">Address</h3>
             <hr className="w-100" />
             <div>
-              <Input
-                label="Address1"
-                type="text"
-                placeholder="Enter Address1"
+              <TextArea
+                label="Address"
+                rows={4}
+                placeholder="Enter Address"
                 error={errors.address1?.message}
-                {...register("address1")}
+                {...register("address1", employeeValidation.address1)}
               />
             </div>
             <div>
-              <Input
+              <TextArea
                 label="Address2"
-                type="text"
+                rows={4}
                 placeholder="Enter Address2"
                 {...register("address2")}
               />
             </div>
             <div>
-              {/* <label className="font-bold">Country : </label>
-              <select
-                value={selectedCountry}
-                className="border-2 w-50 outline-none p-1 m-1"
-                {...register("countryId", {
-                  validate: () =>
-                    selectedCountry !== 0 || "Country is required",
-                  onChange: (e) => {
-                    const id = Number(e.target.value);
-                    setSelectedCountry(id);
-                    handleCountry(id);
-                  },
-                })}
-              >
-                <option value={0}>Select</option>
-                {countryList.map((country) => (
-                  <option key={country.id} value={country.id}>
-                    {country.name}
-                  </option>
-                ))}
-              </select>
-              {errors.countryId && (
-                <p className="text-red-700">{errors.countryId.message}</p>
-              )} */}
-
               <Select
                 label="Country"
                 error={errors.countryId?.message}
                 {...register("countryId", {
+                  valueAsNumber: true,
+                  validate: (value) =>
+                    value !== 0 || employeeValidation.countryId.required,
                   onChange: (e) => {
                     const id = Number(e.target.value);
                     handleCountry(id);
@@ -417,33 +403,13 @@ export default function EmployeeForm() {
               </Select>
             </div>
             <div>
-              {/* <label className="font-bold">State : </label>
-              <select
-                value={selectedStateId}
-                className="border-2 w-50 outline-none p-1 m-1"
-                {...register("stateId", {
-                  validate: () => selectedStateId !== 0 || "State is required",
-                  onChange: (e) => {
-                    const id = Number(e.target.value);
-                    setSelectedStateId(id);
-                    handleState(id);
-                  },
-                })}
-              >
-                <option className="married">Select State</option>
-                {filteredStates.map((state) => (
-                  <option key={state.id} value={state.id}>
-                    {state.name}
-                  </option>
-                ))}
-              </select>
-              {errors.stateId && (
-                <p className="text-red-700">{errors.stateId.message}</p>
-              )} */}
               <Select
                 label="State"
                 error={errors.stateId?.message}
                 {...register("stateId", {
+                  valueAsNumber: true,
+                  validate: (value) =>
+                    value !== 0 || employeeValidation.stateId.required,
                   onChange: (e) => {
                     const id = Number(e.target.value);
                     handleState(id);
@@ -459,31 +425,14 @@ export default function EmployeeForm() {
               </Select>
             </div>
             <div>
-              {/* <label className="font-bold">City : </label>
-              <select
-                value={selectedCityId}
-                className="border-2 w-50 outline-none p-1 m-1"
-                {...register("cityId", {
-                  validate: () => selectedCityId !== 0 || "City is required",
-                  onChange: (e) => {
-                    setSelectedCityId(Number(e.target.value));
-                  },
-                })}
-              >
-                <option value={0}>Select</option>
-                {filteredCities.map((city) => (
-                  <option key={city.id} value={city.id}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
-              {errors.cityId && (
-                <p className="text-red-700">{errors.cityId.message}</p>
-              )} */}
               <Select
                 label="City"
                 error={errors.cityId?.message}
-                {...register("cityId")}
+                {...register("cityId", {
+                  valueAsNumber: true,
+                  validate: (value) =>
+                    value !== 0 || employeeValidation.cityId.required,
+                })}
               >
                 <option value={0}>Select</option>
                 {filteredCities.map((city) => (
@@ -500,11 +449,10 @@ export default function EmployeeForm() {
               type="text"
               placeholder="Enter Pincode"
               error={errors.pincode?.message}
-              {...register("pincode")}
+              {...register("pincode", employeeValidation.pincode)}
             />
           </div>
           <div>
-            <label className="font-bold">Profile : </label>
             <div className="flex items-center gap-4">
               <Input
                 label="Profile"
@@ -512,6 +460,7 @@ export default function EmployeeForm() {
                 placeholder="choose file.."
                 error={errors.profileImage?.message}
                 {...register("profileImage", {
+                  required: "Profile is required",
                   onChange: (e) => {
                     const file = e.target.files?.[0];
                     if (file) {

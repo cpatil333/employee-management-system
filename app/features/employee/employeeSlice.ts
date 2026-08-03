@@ -76,7 +76,11 @@ const fetchEmployees = createAsyncThunk(
       return data;
     } catch (error) {
       if (error instanceof Error) {
-        return rejectWithValue(error);
+        if (axios.isAxiosError(error)) {
+          return rejectWithValue(
+            error.response?.data?.message ?? error.message,
+          );
+        }
       } else {
         return rejectWithValue("Something went wrong!");
       }
@@ -91,43 +95,10 @@ const fetchEmployeeById = createAsyncThunk(
       const data = await getEmployeeById(employeeId);
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message ?? error.message);
       }
-    }
-  },
-);
-
-const fetchDepartments = createAsyncThunk(
-  "employee/fetchDepartments",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getDepartments();
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
-      }
-    }
-  },
-);
-
-const fetchDesignations = createAsyncThunk(
-  "employee/fetchDesignations",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getDesignations();
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
-      }
+      return rejectWithValue("Something went wrong");
     }
   },
 );
@@ -267,34 +238,6 @@ export const EmployeeSlice = createSlice({
       state.selectedEmployee = action.payload;
     });
     addBuilder.addCase(fetchEmployeeById.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
-
-    //deparments
-    addBuilder.addCase(fetchDepartments.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    addBuilder.addCase(fetchDepartments.fulfilled, (state, action) => {
-      state.loading = false;
-      state.departmentList = action.payload;
-    });
-    addBuilder.addCase(fetchDepartments.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
-
-    // fetchDesignations
-    addBuilder.addCase(fetchDesignations.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    addBuilder.addCase(fetchDesignations.fulfilled, (state, action) => {
-      state.loading = false;
-      state.designationList = action.payload;
-    });
-    addBuilder.addCase(fetchDesignations.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });

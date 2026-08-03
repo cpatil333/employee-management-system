@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "../hooks/useAppSelector";
 import Spinner from "../components/ui/Spinner";
 import Link from "next/link";
+import { loginValidation } from "../validation/loginValidation";
+import Input from "../components/ui/Input";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
@@ -66,36 +68,22 @@ export default function LoginPage() {
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label className="text-black font-bold">Email</label>
-            <input
-              id="email"
+            <Input
               type="email"
-              className={styles.formInput}
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^\S+@\S+\.\S+$/,
-                  message: "Invalid email",
-                },
-              })}
+              label="Email"
+              placeholder="Enter email"
+              error={errors.email?.message}
+              {...register("email", loginValidation.email)}
             />
-            {errors.email && (
-              <p className={styles.error}>{errors.email.message}</p>
-            )}
           </div>
           <div>
-            <label className="text-black font-bold">Password</label>
-            <input
+            <Input
+              label="Password"
               type="password"
-              id="password"
-              className={styles.formInput}
-              {...register("password", {
-                required: "Password is required",
-              })}
+              placeholder="Enter password"
+              error={errors.password?.message}
+              {...register("password", loginValidation.password)}
             />
-            {errors.password && (
-              <p className={styles.error}>{errors.password.message}</p>
-            )}
           </div>
           <div className="flex justify-end mt-2 mb-4">
             <Link

@@ -8,6 +8,8 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 import { resetPasswordAsync } from "../features/auth/authSlice";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
+import Input from "../components/ui/Input";
+import { authValidation } from "../validation/authValidation";
 
 type ResetPasswordForm = {
   password: string;
@@ -76,46 +78,25 @@ export default function ResetPasswordPage() {
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label className="text-black font-bold">New Password</label>
-            <input
+            <Input
+              label="New Password"
               type="password"
-              id="password"
-              className={styles.formInput}
-              {...register("password", {
-                required: "password is required",
-                pattern: {
-                  value:
-                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                  message:
-                    "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
-                },
-              })}
+              placeholder="Enter Password"
+              error={errors.password?.message}
+              {...register("password", authValidation.password)}
             />
-            {errors.password && (
-              <p className={styles.error}>{errors.password.message}</p>
-            )}
           </div>
           <div>
-            <label className="text-black font-bold">Confirm Password</label>
-            <input
+            <Input
               type="password"
-              id="password"
-              className={styles.formInput}
+              label="Confirm Password"
               {...register("confirmPassword", {
                 required: "Confirm Password is required",
-                pattern: {
-                  value:
-                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                  message:
-                    "Confirm Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
-                },
                 validate: (value) =>
                   value === password || "Passwords do not match",
               })}
+              error={errors.confirmPassword?.message}
             />
-            {errors.confirmPassword && (
-              <p className={styles.error}>{errors.confirmPassword.message}</p>
-            )}
           </div>
           <div>
             <button

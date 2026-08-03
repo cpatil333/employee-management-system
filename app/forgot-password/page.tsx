@@ -1,13 +1,14 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import styles from "../module/common.module.css";
 import { useAppSelector } from "../hooks/useAppSelector";
 import Spinner from "../components/ui/Spinner";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { forgotPasswordAsync } from "../features/auth/authSlice";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Input from "../components/ui/Input";
+import { authValidation } from "../validation/authValidation";
 
 type ForgotPasswordForm = {
   email: string;
@@ -62,21 +63,13 @@ export default function ForgotPasswordPage() {
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label className="text-black font-bold">Enter Email</label>
-            <input
+            <Input
+              label="Email"
               type="email"
-              className={styles.formInput}
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^\S+@\S+\.\S+$/,
-                  message: "Invalid email",
-                },
-              })}
+              placeholder="Enter email"
+              error={errors.email?.message}
+              {...register("email", authValidation.email)}
             />
-            {errors.email && (
-              <p className={styles.error}>{errors.email.message}</p>
-            )}
           </div>
           <div>
             <button

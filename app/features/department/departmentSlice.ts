@@ -7,6 +7,7 @@ import {
 } from "@/app/services/departmentApi";
 import { Department } from "@/app/types/department.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 
 type updateDepartmentPayLoad = {
   departmentId: number;
@@ -50,11 +51,10 @@ const fetchDepartments = createAsyncThunk(
       const data = getDepartments();
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message ?? error.message);
       }
+      return rejectWithValue("Something went wrong");
     }
   },
 );
@@ -66,11 +66,10 @@ const fetchDepartmentById = createAsyncThunk(
       const data = getDepartment(id);
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message ?? error.message);
       }
+      return rejectWithValue("Something went wrong");
     }
   },
 );

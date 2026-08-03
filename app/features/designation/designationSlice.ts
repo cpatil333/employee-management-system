@@ -7,6 +7,7 @@ import {
 } from "@/app/services/designationApi";
 import { Designation } from "@/app/types/designation.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 
 type updateDesignationPayLoad = {
   designationId: number;
@@ -46,11 +47,10 @@ const fetchDesignations = createAsyncThunk(
       const data = getDesignations();
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message ?? error.message);
       }
+      return rejectWithValue("Something went wrong");
     }
   },
 );
@@ -62,11 +62,10 @@ const fetchDesignationById = createAsyncThunk(
       const data = getDesignation(id);
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
-      } else {
-        return rejectWithValue("Something went wrong!");
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message ?? error.message);
       }
+      return rejectWithValue("Something went wrong");
     }
   },
 );
