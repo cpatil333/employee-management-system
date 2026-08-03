@@ -68,42 +68,40 @@ export default function DesignationForm() {
   };
 
   return (
-    <>
-      <div className="h-[50vh] p-6 text-black">
-        <h1 className="text-3xl font-bold">Designation Information</h1>
-        <hr />
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="font-bold">Name : </label>
-              <input
-                type="text"
-                className="border-2 w-100 outline-none p-1 m-1"
-                {...register("name", { required: "Name is required" })}
-              />
-              {errors.name && (
-                <p className="text-red-700">{errors.name.message}</p>
-              )}
-            </div>
+    <div className="h-[30vh] p-6 text-black">
+      <h1 className="text-3xl font-bold">Designation Information</h1>
+      <hr />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="font-bold">Name : </label>
+            <input
+              type="text"
+              className="border-2 w-100 outline-none p-1 m-1"
+              {...register("name", { required: "Name is required" })}
+            />
+            {errors.name && (
+              <p className="text-red-700">{errors.name.message}</p>
+            )}
           </div>
-          <div className="text-center justify-center">
-            <button
-              onClick={() => dispatch(setIsModalOpen(false))}
-              type="button"
-              className="bg-blue-700 text-xl text-white p-2 m-2"
-            >
-              Close
-            </button>
-            <button
-              disabled={loading}
-              type="submit"
-              className="bg-blue-700  text-xl text-white p-2 m-2"
-            >
-              {loading ? "Edit..." : "Save Designation"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </>
+        </div>
+        <div className="text-center justify-center">
+          <button
+            onClick={() => dispatch(setIsModalOpen(false))}
+            type="button"
+            className="bg-blue-700 text-xl text-white p-2 m-2"
+          >
+            Close
+          </button>
+          <button
+            disabled={loading}
+            type="submit"
+            className="bg-blue-700  text-xl text-white p-2 m-2"
+          >
+            {loading ? "Edit..." : "Save Designation"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

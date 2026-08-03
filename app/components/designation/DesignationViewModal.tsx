@@ -15,6 +15,7 @@ export default function DesignationViewModal() {
   return (
     <Modal
       title="Designation Details"
+      className="max-w-xl"
       onClose={() => dispatch(setDesignationDetailModal(false))}
     >
       <DetailRows label="Designation" value={selectedDesignation?.name} />

@@ -25,6 +25,8 @@ type DesignationState = {
   isDeleteModalOpen: boolean;
   currentPage: number;
   perPage: number;
+  sortField: "name";
+  sortOrder: "asc" | "desc";
 };
 const initialState: DesignationState = {
   designationList: [],
@@ -38,6 +40,8 @@ const initialState: DesignationState = {
   isDeleteModalOpen: false,
   currentPage: 1,
   perPage: 5,
+  sortField: "name",
+  sortOrder: "asc",
 };
 
 const fetchDesignations = createAsyncThunk(
@@ -157,6 +161,16 @@ export const DesignationSlice = createSlice({
     setIsDeleteModalOpen(state, action: PayloadAction<boolean>) {
       state.isDeleteModalOpen = action.payload;
     },
+    setSort: (
+      state,
+      action: PayloadAction<{
+        field: "name";
+        order: "asc" | "desc";
+      }>,
+    ) => {
+      state.sortField = action.payload.field;
+      state.sortOrder = action.payload.order;
+    },
   },
   extraReducers(addBuilder) {
     addBuilder.addCase(fetchDesignations.pending, (state, action) => {
@@ -247,6 +261,7 @@ export const {
   previousPage,
   setIsModalOpen,
   setIsDeleteModalOpen,
+  setSort,
 } = DesignationSlice.actions;
 export {
   fetchDesignations,

@@ -1,27 +1,51 @@
 import { RootState } from "@/app/store/store";
+import { createSelector } from "@reduxjs/toolkit";
 
-export const selectFilteredDesignation = (state: RootState) => {
-  const { searchTerm, designationList } = state.designation;
+export const selectDesignationState = (state: RootState) => state.designation;
 
-  return designationList.filter((desg) => {
-    const matchSearchTerm = desg.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+export const selectFilteredDesignation = createSelector(
+  [selectDesignationState],
+  (designationState) => {
+    const { searchTerm, designationList } = designationState;
 
-    return matchSearchTerm;
-  });
-};
+    return designationList.filter((desg) => {
+      const matchSearchTerm = desg.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
-export const selectPaginatedDepartments = (state: RootState) => {
-  const { currentPage, perPage } = state.designation;
-  const sortedDesignations = selectFilteredDesignation(state);
+      return matchSearchTerm;
+    });
+  },
+);
 
-  const startIndex = (currentPage - 1) * perPage;
-  return sortedDesignations.slice(startIndex, startIndex + perPage);
-};
+export const selectSortedDesignations = createSelector(
+  [selectFilteredDesignation, selectDesignationState],
+  (filteredDesignation, designationState) => {
+    const sorted = [...filteredDesignation];
 
-export const selectTotalPages = (state: RootState) => {
-  const filtered = selectFilteredDesignation(state);
+    sorted.sort((a, b) => {
+      const comparison = a.name.localeCompare(b.name);
 
-  return Math.ceil(filtered.length / state.designation.perPage);
-};
+      return designationState.sortOrder === "asc" ? comparison : -comparison;
+    });
+
+    return sorted;
+  },
+);
+
+export const selectPaginatedDesignation = createSelector(
+  [selectSortedDesignations, selectDesignationState],
+  (sortedDesignations, designationState) => {
+    const { currentPage, perPage } = designationState;
+
+    const startIndex = (currentPage - 1) * perPage;
+    return sortedDesignations.slice(startIndex, startIndex + perPage);
+  },
+);
+
+export const selectTotalPages = createSelector(
+  [selectSortedDesignations, selectDesignationState],
+  (filteredDesignation, designationState) => {
+    return Math.ceil(filteredDesignation.length / designationState.perPage);
+  },
+);

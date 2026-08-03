@@ -460,7 +460,10 @@ export default function EmployeeForm() {
                 placeholder="choose file.."
                 error={errors.profileImage?.message}
                 {...register("profileImage", {
-                  required: "Profile is required",
+                  validate: () => {
+                    if (selectedEmployee) return true;
+                    return preview || "Profile is required";
+                  },
                   onChange: (e) => {
                     const file = e.target.files?.[0];
                     if (file) {

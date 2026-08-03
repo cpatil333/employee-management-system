@@ -76,7 +76,7 @@ export default function DepartmentForm() {
 
   return (
     <>
-      <div className="h-[50vh] p-6 text-black">
+      <div className="h-[60vh] p-6 text-black">
         <h1 className="text-3xl font-bold">Department Information</h1>
         <hr />
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -91,7 +91,7 @@ export default function DepartmentForm() {
               />
             </div>
           </div>
-          <div className="flex gap-4 mt-6">
+          <div className="flex gap-4 mb-6">
             <Button
               onClick={() => dispatch(setIsModalOpen(false))}
               className="flex-1 bg-gray-500"
