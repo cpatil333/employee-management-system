@@ -3,13 +3,15 @@
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import {
+  deleteDepartmentAsync,
   fetchDepartmentById,
   setDepartmentDetailModal,
   setIsDeleteModalOpen,
   setIsModalOpen,
 } from "@/app/features/department/departmentSlice";
 import DepartmentViewModal from "./DepartmentViewModal";
-import DeleteEmployeeModal from "./DeleteConfirmationModal";
+import DeleteModal from "../ui/DeleteModal";
+import toast from "react-hot-toast";
 
 type ActionButtonsProps = {
   departmentId: number;
@@ -22,8 +24,11 @@ export default function ActionButtons({ departmentId }: ActionButtonsProps) {
     (state) => state.department.isDeleteModalOpen,
   );
 
-  const designationDetailModal = useAppSelector(
+  const departmentDetailModal = useAppSelector(
     (state) => state.department.departmentDetailModal,
+  );
+  const selectedDepartment = useAppSelector(
+    (state) => state.department.selectedDepartment,
   );
 
   const handleEdit = () => {
@@ -61,8 +66,19 @@ export default function ActionButtons({ departmentId }: ActionButtonsProps) {
       >
         🗑 Delete
       </button>
-      {isDeleteModalOpen && <DeleteEmployeeModal />}
-      {designationDetailModal && <DepartmentViewModal />}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          title="Delete Department"
+          message="Are you sure you want to delete this Department?"
+          onCancel={() => dispatch(setIsDeleteModalOpen(false))}
+          onConfirm={() => {
+            dispatch(deleteDepartmentAsync(Number(selectedDepartment?.id)));
+            toast.success("Department Deleted");
+            dispatch(setIsDeleteModalOpen(false));
+          }}
+        />
+      )}
+      {departmentDetailModal && <DepartmentViewModal />}
     </div>
   );
 }

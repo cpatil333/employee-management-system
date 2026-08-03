@@ -5,11 +5,14 @@ import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 
 import {
+  deleteEmployeeAsync,
   fetchEmployeeById,
   setEmployeeDetailModal,
   setIsDeleteModalOpen,
   setIsModalOpen,
 } from "@/app/features/employee/employeeSlice";
+import DeleteModal from "../ui/DeleteModal";
+import toast from "react-hot-toast";
 
 type ActionButtonsProps = {
   employeeId: number;
@@ -24,6 +27,10 @@ export default function ActionButtons({ employeeId }: ActionButtonsProps) {
 
   const employeeDetailModal = useAppSelector(
     (state) => state.employee.employeeDetailModal,
+  );
+
+  const selectedEmployee = useAppSelector(
+    (state) => state.employee.selectedEmployee,
   );
 
   const handleEdit = () => {
@@ -61,7 +68,18 @@ export default function ActionButtons({ employeeId }: ActionButtonsProps) {
       >
         🗑 Delete
       </button>
-      {isDeleteModalOpen && <DeleteEmployeeModal />}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          title="Delete Employee"
+          message="Are you sure you want delete this employee?"
+          onCancel={() => dispatch(setIsDeleteModalOpen(false))}
+          onConfirm={() => {
+            dispatch(deleteEmployeeAsync(Number(selectedEmployee?.employeeId)));
+            toast.success("Employee deleted");
+            dispatch(setIsDeleteModalOpen(false));
+          }}
+        />
+      )}
       {employeeDetailModal && <EmployeeDetailModal />}
     </div>
   );

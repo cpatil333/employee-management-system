@@ -7,12 +7,7 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 import { fetchEmployees } from "../features/employee/employeeSlice";
 import DashboardCard from "../components/ui/DashboardCard";
 
-type DashboardCardProps = {
-  title: string;
-  value: number;
-};
-
-export default function DashboardPage({ title, value }: DashboardCardProps) {
+export default function DashboardPage() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {

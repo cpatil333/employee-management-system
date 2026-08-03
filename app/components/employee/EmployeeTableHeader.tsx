@@ -1,4 +1,5 @@
 "use client";
+
 import EmployeeRow from "./EmployeeRow";
 import { SortField } from "@/app/constant/employee.constants";
 import { selectPaginatedEmployees } from "../../features/employee/employeeSelectors";
@@ -10,12 +11,13 @@ import { setSort } from "@/app/features/employee/employeeSlice";
 import { fetchDepartments } from "@/app/features/department/departmentSlice";
 import { fetchDesignations } from "@/app/features/designation/designationSlice";
 import { useEffect } from "react";
+import TableContainer from "../ui/TableContainer";
+import SortIcon from "../ui/SortIcon";
 
 export default function EmployeeTable() {
   const dispatch = useAppDispatch();
-
+  const { loading } = useAppSelector((state) => state.employee);
   const { sortField, sortOrder } = useAppSelector((state) => state.employee);
-
   const paginatedEmployees = useAppSelector(selectPaginatedEmployees);
 
   useEffect(() => {
@@ -35,44 +37,41 @@ export default function EmployeeTable() {
 
     dispatch(setCurrentPage(1));
   };
-  const { loading } = useAppSelector((state) => state.employee);
 
   if (loading) {
     return <Spinner />;
   }
 
   return (
-    <div className="w-6xl bg-white rounded-xl shadow-lg overflow-x-auto">
-      <table className="w-6xl bg-white text-black text-[16px]">
-        <thead className="bg-blue-950 text-white">
-          <tr className="bg-black text-white border-2">
-            <th onClick={() => handleSort("name")}>
-              Name {sortField === "name" && (sortOrder === "asc" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("email")}>
-              Email {sortField === "email" && (sortOrder === "asc" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("department")}>
-              Department{" "}
-              {sortField === "department" && (sortOrder === "asc" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("designation")}>
-              Designation{" "}
-              {sortField === "designation" && (sortOrder === "asc" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("status")}>
-              Status{" "}
-              {sortField === "status" && (sortOrder === "asc" ? "▲" : "▼")}
-            </th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {paginatedEmployees.map((employee) => (
-            <EmployeeRow key={employee.employeeId} rowData={employee} />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <TableContainer className="max-w-6xl">
+      <thead className="bg-blue-950 text-white">
+        <tr className="bg-black text-white border-2">
+          <th onClick={() => handleSort("name")}>
+            Name
+            <SortIcon active={sortField === "name"} order={sortOrder} />
+          </th>
+          <th onClick={() => handleSort("email")}>
+            Email <SortIcon active={sortField === "name"} order={sortOrder} />
+          </th>
+          <th onClick={() => handleSort("department")}>
+            Department
+            <SortIcon active={sortField === "name"} order={sortOrder} />
+          </th>
+          <th onClick={() => handleSort("designation")}>
+            Designation
+            <SortIcon active={sortField === "name"} order={sortOrder} />
+          </th>
+          <th onClick={() => handleSort("status")}>
+            Status <SortIcon active={sortField === "name"} order={sortOrder} />
+          </th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-gray-200">
+        {paginatedEmployees.map((employee) => (
+          <EmployeeRow key={employee.employeeId} rowData={employee} />
+        ))}
+      </tbody>
+    </TableContainer>
   );
 }

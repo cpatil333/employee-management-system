@@ -59,12 +59,6 @@ export default function EmployeeForm() {
 
   const [preview, setPreview] = useState<string | null>(null);
 
-  useEffect(() => {
-    dispatch(fetchDepartments());
-    dispatch(fetchDesignations());
-    dispatch(fetchCountries());
-  }, [dispatch]);
-
   const { loading } = useAppSelector((state) => state.employee);
 
   const selectedEmployee = useAppSelector(
@@ -85,6 +79,7 @@ export default function EmployeeForm() {
 
   const filteredCities = useAppSelector((state) => state.location.cityList);
   //fill State dropdown list
+
   const handleCountry = (countryId: number) => {
     dispatch(fetchStatesByCountryId(countryId));
   };

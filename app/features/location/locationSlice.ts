@@ -5,6 +5,7 @@ import { City } from "@/app/types/city.types";
 import { Country } from "@/app/types/country.types";
 import { State } from "@/app/types/state.types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 type LocationState = {
   countryList: Country[];
@@ -29,8 +30,8 @@ const fetchCountries = createAsyncThunk(
       const data = await getCountry();
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data.message ?? error.message);
       } else {
         return rejectWithValue("Something went wrong!");
       }
@@ -44,8 +45,8 @@ const fetchStatesByCountryId = createAsyncThunk(
       const data = await getStates(countryId);
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data.message ?? error.message);
       } else {
         return rejectWithValue("Something went wrong!");
       }
@@ -60,8 +61,8 @@ const fetchCitiesByStateId = createAsyncThunk(
       const data = await getCities(stateId);
       return data;
     } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error);
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data.message ?? error.message);
       } else {
         return rejectWithValue("Something went wrong!");
       }

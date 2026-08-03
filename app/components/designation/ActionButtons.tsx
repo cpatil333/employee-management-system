@@ -3,13 +3,15 @@
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import {
+  deleteDesignationAsync,
   fetchDesignationById,
   setDesignationDetailModal,
   setIsDeleteModalOpen,
   setIsModalOpen,
 } from "@/app/features/designation/designationSlice";
-import DeleteDesignationModal from "./DeleteConfirmationModal";
 import DesignationViewModal from "./DesignationViewModal";
+import DeleteModal from "../ui/DeleteModal";
+import toast from "react-hot-toast";
 
 type ActionButtonsProps = {
   designationId: number;
@@ -22,8 +24,12 @@ export default function ActionButtons({ designationId }: ActionButtonsProps) {
     (state) => state.designation.isDeleteModalOpen,
   );
 
-  const departmentDetailModal = useAppSelector(
+  const designnationDetailModal = useAppSelector(
     (state) => state.designation.designationDetailModal,
+  );
+
+  const selectedDesignation = useAppSelector(
+    (state) => state.designation.selectedDesignation,
   );
 
   const handleEdit = () => {
@@ -62,8 +68,19 @@ export default function ActionButtons({ designationId }: ActionButtonsProps) {
       >
         🗑 Delete
       </button>
-      {isDeleteModalOpen && <DeleteDesignationModal />}
-      {departmentDetailModal && <DesignationViewModal />}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          title="Delete Designation"
+          message="Are you sure you want to delete this Designation"
+          onCancel={() => dispatch(setIsDeleteModalOpen(false))}
+          onConfirm={() => {
+            dispatch(deleteDesignationAsync(Number(selectedDesignation?.id)));
+            toast.success("Designation Deleted!");
+            dispatch(setIsDeleteModalOpen(false));
+          }}
+        />
+      )}
+      {designnationDetailModal && <DesignationViewModal />}
     </div>
   );
 }

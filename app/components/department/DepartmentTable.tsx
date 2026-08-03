@@ -1,7 +1,4 @@
-import {
-  selectFilteredDepartment,
-  selectPaginatedDepartments,
-} from "@/app/features/department/departmentSelectors";
+import { selectPaginatedDepartments } from "@/app/features/department/departmentSelectors";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
 import DepartmentRow from "./DepartmentRow";
 import Spinner from "../ui/Spinner";
@@ -11,6 +8,9 @@ import {
   setSort,
 } from "@/app/features/department/departmentSlice";
 import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import TableContainer from "../ui/TableContainer";
+import SortIcon from "../ui/SortIcon";
+import EmptyState from "../ui/EmptyState";
 
 export default function DepartmentTable() {
   const dispatch = useAppDispatch();
@@ -36,24 +36,32 @@ export default function DepartmentTable() {
     return <Spinner />;
   }
 
+  const hasDepartments = paginatedDeparments.length > 0;
+
   return (
-    <div className="w-4xl bg-white rounded-xl shadow-lg">
-      <table className="w-4xl bg-white text-black text-[16px]">
-        <thead className="bg-blue-950 text-white">
-          <tr className="bg-black text-white border-2">
-            <th onClick={() => handleSort("name")}>
-              Name
-              {sortField === "name" && (sortOrder === "asc" ? " ▲" : " ▼")}
-            </th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {paginatedDeparments.map((dept) => (
-            <DepartmentRow key={dept.id} rowData={dept} />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      {hasDepartments ? (
+        <TableContainer className="max-w-4xl">
+          <thead className="bg-blue-950 text-white">
+            <tr className="bg-black text-white border-2">
+              <th onClick={() => handleSort("name")}>
+                Name
+                <SortIcon active={sortField === "name"} order={sortOrder} />
+              </th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {paginatedDeparments.map((dept) => (
+              <DepartmentRow key={dept.id} rowData={dept} />
+            ))}
+          </tbody>
+        </TableContainer>
+      ) : (
+        <div>
+          <EmptyState message="No departments found." />
+        </div>
+      )}
+    </>
   );
 }
