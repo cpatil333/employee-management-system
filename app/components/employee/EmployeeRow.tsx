@@ -1,6 +1,7 @@
 import { Employee } from "@/app/types/empoyee.types";
 import ActionButtons from "./ActionButtons";
 import { useAppSelector } from "@/app/hooks/useAppSelector";
+import { STATUS } from "@/app/constant/status.constants";
 
 type EmployeeRowProps = {
   rowData: Employee;
@@ -25,7 +26,7 @@ export default function EmployeeRow({ rowData }: EmployeeRowProps) {
         {designationtList.find((d) => d.id === rowData.designationId)?.name ??
           ""}
       </td>
-      <td>{rowData.status === "Active" ? "🟢 Active" : "🔴 Inactive"}</td>
+      <td>{rowData.status === STATUS.ACTIVE ? "🟢 Active" : "🔴 Inactive"}</td>
       <td>
         <ActionButtons employeeId={rowData.employeeId} />
       </td>

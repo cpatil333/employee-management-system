@@ -107,3 +107,59 @@ export const selectTotalPages = createSelector(
     return Math.ceil(filteredEmployees.length / employeeState.perPage);
   },
 );
+
+//for charts
+export const selectEmployeesByDepartment = createSelector(
+  [selectEmployeeState, selectDepartmentState],
+  (employeeState, departmentState) => {
+    return departmentState.departmentList.map((dept) => ({
+      department: dept.name,
+      count: employeeState.employeeList.filter(
+        (emp) => emp.departmentId === dept.id,
+      ).length,
+    }));
+  },
+);
+
+export const selectEmployeesByGender = createSelector(
+  [selectEmployeeState],
+  (employeeState) => [
+    {
+      gender: "Male",
+      count: employeeState.employeeList.filter((emp) => emp.gender === "Male")
+        .length,
+    },
+    {
+      gender: "Female",
+      count: employeeState.employeeList.filter((emp) => emp.gender === "Female")
+        .length,
+    },
+  ],
+);
+
+export const selectEmployeeStatusSummary = createSelector(
+  [selectEmployeeState],
+  (employeeState) => [
+    {
+      status: "Active",
+      count: employeeState.employeeList.filter((emp) => emp.status === "Active")
+        .length,
+    },
+    {
+      status: "Inactive",
+      count: employeeState.employeeList.filter(
+        (emp) => emp.status === "Inactive",
+      ).length,
+    },
+  ],
+);
+
+export const selectRecentEmployees = createSelector(
+  [selectEmployeeState],
+  (employeeState) => {
+    return [...employeeState.employeeList].sort(
+      (a, b) =>
+        new Date(b.joiningDate).getTime() - new Date(a.joiningDate).getTime(),
+    );
+  },
+);

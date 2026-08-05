@@ -13,6 +13,7 @@ import { fetchDesignations } from "@/app/features/designation/designationSlice";
 import { useEffect } from "react";
 import TableContainer from "../ui/TableContainer";
 import SortIcon from "../ui/SortIcon";
+import EmptyState from "../ui/EmptyState";
 
 export default function EmployeeTable() {
   const dispatch = useAppDispatch();
@@ -42,36 +43,46 @@ export default function EmployeeTable() {
     return <Spinner />;
   }
 
+  const hasEmployees = paginatedEmployees.length > 0;
+
   return (
-    <TableContainer className="max-w-6xl">
-      <thead className="bg-blue-950 text-white">
-        <tr className="bg-black text-white border-2">
-          <th onClick={() => handleSort("name")}>
-            Name
-            <SortIcon active={sortField === "name"} order={sortOrder} />
-          </th>
-          <th onClick={() => handleSort("email")}>
-            Email <SortIcon active={sortField === "name"} order={sortOrder} />
-          </th>
-          <th onClick={() => handleSort("department")}>
-            Department
-            <SortIcon active={sortField === "name"} order={sortOrder} />
-          </th>
-          <th onClick={() => handleSort("designation")}>
-            Designation
-            <SortIcon active={sortField === "name"} order={sortOrder} />
-          </th>
-          <th onClick={() => handleSort("status")}>
-            Status <SortIcon active={sortField === "name"} order={sortOrder} />
-          </th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-gray-200">
-        {paginatedEmployees.map((employee) => (
-          <EmployeeRow key={employee.employeeId} rowData={employee} />
-        ))}
-      </tbody>
-    </TableContainer>
+    <>
+      {hasEmployees ? (
+        <TableContainer className="max-w-6xl">
+          <thead className="bg-blue-950 text-white">
+            <tr className="bg-black text-white border-2">
+              <th onClick={() => handleSort("name")}>
+                Name
+                <SortIcon active={sortField === "name"} order={sortOrder} />
+              </th>
+              <th onClick={() => handleSort("email")}>
+                Email{" "}
+                <SortIcon active={sortField === "name"} order={sortOrder} />
+              </th>
+              <th onClick={() => handleSort("department")}>
+                Department
+                <SortIcon active={sortField === "name"} order={sortOrder} />
+              </th>
+              <th onClick={() => handleSort("designation")}>
+                Designation
+                <SortIcon active={sortField === "name"} order={sortOrder} />
+              </th>
+              <th onClick={() => handleSort("status")}>
+                Status{" "}
+                <SortIcon active={sortField === "name"} order={sortOrder} />
+              </th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {paginatedEmployees.map((employee) => (
+              <EmployeeRow key={employee.employeeId} rowData={employee} />
+            ))}
+          </tbody>
+        </TableContainer>
+      ) : (
+        <EmptyState message="No Employees found.." />
+      )}
+    </>
   );
 }

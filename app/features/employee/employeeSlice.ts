@@ -1,7 +1,6 @@
 import { Employee } from "@/app/types/empoyee.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SortField } from "../../constant/employee.constants";
-
 import {
   createEmployee,
   deleteEmployee,
@@ -9,10 +8,8 @@ import {
   getEmployees,
   updateEmployee,
 } from "@/app/services/employeeApi";
-import { getDepartments } from "@/app/services/departmentApi";
 import { Department } from "@/app/types/department.types";
 import { Designation } from "@/app/types/designation.types";
-import { getDesignations } from "@/app/services/designationApi";
 import axios from "axios";
 
 type EmployeeState = {

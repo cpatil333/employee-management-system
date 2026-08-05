@@ -13,7 +13,6 @@ import {
 import toast from "react-hot-toast";
 import {
   fetchCitiesByStateId,
-  fetchCountries,
   fetchStatesByCountryId,
 } from "@/app/features/location/locationSlice";
 import Input from "../ui/Input";
@@ -21,8 +20,13 @@ import Select from "../ui/Select";
 import RadioGroup from "../ui/RadioGroup";
 import { employeeValidation } from "@/app/validation/employeeValidation";
 import TextArea from "../ui/TextArea";
-import { fetchDepartments } from "@/app/features/department/departmentSlice";
-import { fetchDesignations } from "@/app/features/designation/designationSlice";
+
+import {
+  GENDER_OPTIONS,
+  MARITAL_STATUSES,
+  ROLES,
+  STATUS_OPTIONS,
+} from "@/app/constant/employee.constants";
 
 export default function EmployeeForm() {
   const dispatch = useAppDispatch();
@@ -140,7 +144,7 @@ export default function EmployeeForm() {
       if (selectedEmployee) {
         formData.append("employeeId", String(data.employeeId));
       }
-
+      console.log(data.profileImage);
       formData.append("name", data.name);
       formData.append("email", data.email);
       formData.append("password", data.password);
@@ -252,18 +256,18 @@ export default function EmployeeForm() {
                 })}
               >
                 <option value="">Select</option>
-                <option value="Admin">Admin</option>
-                <option value="Employee">Employee</option>
+                {ROLES.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
               </Select>
             </div>
             <div>
               <RadioGroup
                 label="Gender"
                 name="gender"
-                options={[
-                  { label: "Male", value: "Male" },
-                  { label: "Female", value: "Female" },
-                ]}
+                options={GENDER_OPTIONS}
                 register={register}
                 error={errors.gender?.message}
               />
@@ -276,10 +280,12 @@ export default function EmployeeForm() {
                   required: "Marital Status is required",
                 })}
               >
-                <option value="married">Married</option>
-                <option value="unmarried">Unmarried</option>
-                <option value="single">Single</option>
-                <option value="divorce">Divorce</option>
+                <option value="">Select</option>
+                {MARITAL_STATUSES.map((marital) => (
+                  <option key={marital} value={marital}>
+                    {marital}
+                  </option>
+                ))}
               </Select>
             </div>
           </div>
@@ -346,10 +352,7 @@ export default function EmployeeForm() {
               <RadioGroup
                 label="Status"
                 name="status"
-                options={[
-                  { label: "Active", value: "Active" },
-                  { label: "InActive", value: "Inactive" },
-                ]}
+                options={STATUS_OPTIONS}
                 register={register}
                 error={errors.status?.message}
               />
@@ -455,9 +458,9 @@ export default function EmployeeForm() {
                 placeholder="choose file.."
                 error={errors.profileImage?.message}
                 {...register("profileImage", {
-                  validate: () => {
+                  validate: (value) => {
                     if (selectedEmployee) return true;
-                    return preview || "Profile is required";
+                    return value?.length > 0 || "Profile is required";
                   },
                   onChange: (e) => {
                     const file = e.target.files?.[0];
