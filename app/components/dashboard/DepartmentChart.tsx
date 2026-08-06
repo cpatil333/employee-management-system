@@ -10,9 +10,9 @@ import {
 import { DepartmentChart } from "../../types/department.types";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import {
-  setSelectedDepartment,
-  setSelectedDepartmentId,
-} from "../../features/employee/employeeSlice";
+  fetchEmployeeByDepartmentId,
+  setSelectedDepartmentTitle,
+} from "@/app/features/dashboard/dashboardSlice";
 
 type DepartmentChartProps = {
   chartData: DepartmentChart[];
@@ -47,9 +47,10 @@ export default function DepartmentChart({
               fill="#2563eb"
               radius={[0, 6, 6, 0]}
               onClick={(data) => {
-                // console.log(data.payload.department);
-                // console.log(data.payload.count);
-                dispatch(setSelectedDepartmentId(data.payload.deparment));
+                console.log(data.payload);
+                console.log(data.payload.department);
+                dispatch(setSelectedDepartmentTitle(data.payload.department));
+                dispatch(fetchEmployeeByDepartmentId(data.payload.id));
               }}
             />
           </BarChart>

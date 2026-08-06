@@ -113,6 +113,7 @@ export const selectEmployeesByDepartment = createSelector(
   [selectEmployeeState, selectDepartmentState],
   (employeeState, departmentState) => {
     return departmentState.departmentList.map((dept) => ({
+      id: dept.id,
       department: dept.name,
       count: employeeState.employeeList.filter(
         (emp) => emp.departmentId === dept.id,

@@ -17,7 +17,8 @@ import {
 } from "../features/employee/employeeSelectors";
 import ChartCard from "../components/ui/ChartCard";
 import RecentEmployees from "../components/dashboard/RecentEmployeesTable";
-import StatusChart from "../components/dashboard/StatusChart";
+import StatusChart from "../components/dashboard/EmployeeStatusChart";
+import DashboardEmployeeTable from "../components/dashboard/DashboardEmployeeTable";
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
@@ -35,11 +36,15 @@ export default function DashboardPage() {
     (state: RootState) => state.employee.employeeList,
   );
 
-  const selectedDepartment = useAppSelector(
-    (state) => state.employee.selectedDepartment,
+  const setDepartmentEmployees = useAppSelector(
+    (state) => state.dashboard.departmentEmployees,
   );
 
-  console.log(selectedDepartment);
+  const DepartmentTitle = useAppSelector(
+    (state) => state.dashboard.selectedDepartmentTitle,
+  );
+
+  console.log(setDepartmentEmployees);
 
   const dashboard = useMemo(() => {
     return [
@@ -107,6 +112,14 @@ export default function DashboardPage() {
             hasError={false}
           />
         </ChartCard>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <DashboardEmployeeTable
+          tableData={setDepartmentEmployees}
+          title={DepartmentTitle}
+          loading={false}
+          hasError={false}
+        />
       </div>
     </>
   );
