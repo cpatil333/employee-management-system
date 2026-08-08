@@ -11,6 +11,7 @@ import { useAppDispatch } from "@/app/hooks/useAppDispatch";
 import TableContainer from "../ui/TableContainer";
 import SortIcon from "../ui/SortIcon";
 import EmptyState from "../ui/EmptyState";
+import Loading from "../ui/Loading";
 
 export default function DepartmentTable() {
   const dispatch = useAppDispatch();
@@ -33,7 +34,7 @@ export default function DepartmentTable() {
   };
 
   if (loading) {
-    return <Spinner />;
+    return <Loading message="Loading Departments..." />;
   }
 
   const hasDepartments = paginatedDeparments.length > 0;

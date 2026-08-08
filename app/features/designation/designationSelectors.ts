@@ -1,3 +1,4 @@
+import { PAGE_SIZE } from "@/app/constant/common.constants";
 import { RootState } from "@/app/store/store";
 import { createSelector } from "@reduxjs/toolkit";
 
@@ -38,7 +39,7 @@ export const selectPaginatedDesignation = createSelector(
   (sortedDesignations, designationState) => {
     const { currentPage, perPage } = designationState;
 
-    const startIndex = (currentPage - 1) * perPage;
+    const startIndex = (currentPage - 1) * PAGE_SIZE.DESIGNATIONS;
     return sortedDesignations.slice(startIndex, startIndex + perPage);
   },
 );

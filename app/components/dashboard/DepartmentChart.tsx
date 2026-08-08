@@ -11,8 +11,9 @@ import { DepartmentChart } from "../../types/department.types";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import {
   fetchEmployeeByDepartmentId,
-  setSelectedDepartmentTitle,
+  setDashboardSelection,
 } from "@/app/features/dashboard/dashboardSlice";
+import Loading from "../ui/Loading";
 
 type DepartmentChartProps = {
   chartData: DepartmentChart[];
@@ -25,7 +26,7 @@ export default function DepartmentChart({
   hasError,
 }: DepartmentChartProps) {
   const dispatch = useAppDispatch();
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading message="Loading Departments..." />;
   if (hasError) return <p>Unable to load chart data.</p>;
 
   return (
@@ -47,9 +48,12 @@ export default function DepartmentChart({
               fill="#2563eb"
               radius={[0, 6, 6, 0]}
               onClick={(data) => {
-                console.log(data.payload);
-                console.log(data.payload.department);
-                dispatch(setSelectedDepartmentTitle(data.payload.department));
+                dispatch(
+                  setDashboardSelection({
+                    title: "Department",
+                    filter: data.payload.department,
+                  }),
+                );
                 dispatch(fetchEmployeeByDepartmentId(data.payload.id));
               }}
             />

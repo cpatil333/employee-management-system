@@ -7,9 +7,14 @@ import {
   PieChart,
   ResponsiveContainer,
   Tooltip,
-  XAxis,
   YAxis,
 } from "recharts";
+import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import {
+  fetchEmployeeByStatus,
+  setDashboardSelection,
+} from "@/app/features/dashboard/dashboardSlice";
+import Loading from "../ui/Loading";
 
 type StatusChartProps = {
   chartData: StatusChart[];
@@ -24,7 +29,8 @@ export default function StatusChart({
   loading,
   hasError,
 }: StatusChartProps) {
-  if (loading) return <p>Loading...</p>;
+  const dispatch = useAppDispatch();
+  if (loading) return <Loading message="Loading Status..." />;
   if (hasError) return <p>Unable to load chart data..</p>;
   return (
     <div>
@@ -32,7 +38,6 @@ export default function StatusChart({
         <ResponsiveContainer width="100%" height={350}>
           <PieChart>
             <CartesianGrid strokeLinecap="square" />
-            <XAxis dataKey="status" />
             <YAxis />
             <Tooltip />
             <Pie
@@ -45,6 +50,15 @@ export default function StatusChart({
               outerRadius={120}
               fill="#2563eb"
               label
+              onClick={(data) => {
+                dispatch(
+                  setDashboardSelection({
+                    title: "Status",
+                    filter: data.payload.status,
+                  }),
+                );
+                dispatch(fetchEmployeeByStatus(data.payload.status));
+              }}
             >
               {chartData.map((_, index) => (
                 <Cell key={index} fill={COLORS[index % COLORS.length]} />

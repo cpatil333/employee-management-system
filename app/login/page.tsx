@@ -12,6 +12,7 @@ import Spinner from "../components/ui/Spinner";
 import Link from "next/link";
 import { loginValidation } from "../validation/loginValidation";
 import Input from "../components/ui/Input";
+import Loading from "../components/ui/Loading";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
@@ -30,6 +31,8 @@ export default function LoginPage() {
   });
 
   const { loading } = useAppSelector((state) => state.auth);
+
+  if (loading) return <Loading message="Loading Employees Dashboard..." />;
 
   const onSubmit = async (data: LoginType) => {
     try {

@@ -1,6 +1,7 @@
 import React from "react";
 import { RecentEmployeesJoin } from "../../types/recentEmployeesJoin.types";
 import TableContainer from "../ui/TableContainer";
+import Loading from "../ui/Loading";
 
 type RecentEmployeesProps = {
   Data: RecentEmployeesJoin[];
@@ -13,7 +14,7 @@ export default function RecentEmployeesTable({
   loading,
   hasError,
 }: RecentEmployeesProps) {
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading message="Loading Employees..." />;
   if (hasError) return <p>Unable to load chart data..</p>;
   return (
     <div>

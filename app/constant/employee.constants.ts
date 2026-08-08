@@ -30,3 +30,7 @@ export const STATUS_OPTIONS = Object.values(STATUS).map((status) => ({
   label: status,
   value: status,
 }));
+
+export const MAX_UPLOAD_SIZE = 5 * 1024 * 1024; // 5 MB
+
+export const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;

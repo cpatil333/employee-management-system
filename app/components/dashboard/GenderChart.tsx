@@ -7,9 +7,14 @@ import {
   PieChart,
   ResponsiveContainer,
   Tooltip,
-  XAxis,
   YAxis,
 } from "recharts";
+import { useAppDispatch } from "@/app/hooks/useAppDispatch";
+import {
+  fetchEmployeeByGender,
+  setDashboardSelection,
+} from "@/app/features/dashboard/dashboardSlice";
+import Loading from "../ui/Loading";
 
 type GenderChartProps = {
   chartData: GenderChart[];
@@ -24,7 +29,8 @@ export default function GenderChart({
   loading,
   hasError,
 }: GenderChartProps) {
-  if (loading) return <p>Loading...</p>;
+  const dispatch = useAppDispatch();
+  if (loading) return <Loading message="Loading Gender..." />;
   if (hasError) return <p>Unable to load chart data</p>;
 
   return (
@@ -33,7 +39,6 @@ export default function GenderChart({
         <ResponsiveContainer width="100%" height={350}>
           <PieChart>
             <CartesianGrid strokeLinecap="square" />
-            <XAxis dataKey="gender" />
             <YAxis />
             <Tooltip />
             <Pie
@@ -46,6 +51,15 @@ export default function GenderChart({
               outerRadius={120}
               fill="#2563eb"
               label
+              onClick={(data) => {
+                dispatch(
+                  setDashboardSelection({
+                    title: "Gender",
+                    filter: data.payload.gender,
+                  }),
+                );
+                dispatch(fetchEmployeeByGender(data.payload.gender));
+              }}
             >
               {chartData.map((_, index) => (
                 <Cell key={index} fill={COLORS[index % COLORS.length]} />

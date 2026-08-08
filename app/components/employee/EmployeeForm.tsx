@@ -23,7 +23,9 @@ import TextArea from "../ui/TextArea";
 
 import {
   GENDER_OPTIONS,
+  IMAGE_TYPES,
   MARITAL_STATUSES,
+  MAX_UPLOAD_SIZE,
   ROLES,
   STATUS_OPTIONS,
 } from "@/app/constant/employee.constants";
@@ -459,11 +461,39 @@ export default function EmployeeForm() {
                 error={errors.profileImage?.message}
                 {...register("profileImage", {
                   validate: (value) => {
-                    if (selectedEmployee) return true;
-                    return value?.length > 0 || "Profile is required";
+                    // Profile is optional while editing
+                    if (selectedEmployee && !value?.length) {
+                      return true;
+                    }
+
+                    // Required while creating
+                    if (!selectedEmployee && !value?.length) {
+                      return "Profile is required";
+                    }
+
+                    const file = value?.[0];
+
+                    if (!file) {
+                      return true;
+                    }
+
+                    if (file.size > MAX_UPLOAD_SIZE) {
+                      return "Image must be less than 5 MB";
+                    }
+
+                    if (
+                      !IMAGE_TYPES.includes(
+                        file.type as (typeof IMAGE_TYPES)[number],
+                      )
+                    ) {
+                      return "Only JPG, PNG and WebP images are allowed";
+                    }
+
+                    return true;
                   },
                   onChange: (e) => {
                     const file = e.target.files?.[0];
+
                     if (file) {
                       setPreview(URL.createObjectURL(file));
                     }

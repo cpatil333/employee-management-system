@@ -10,6 +10,7 @@ import {
   setSort,
 } from "@/app/features/designation/designationSlice";
 import EmptyState from "../ui/EmptyState";
+import Loading from "../ui/Loading";
 
 export default function DesignationTable() {
   const dispatch = useAppDispatch();
@@ -31,8 +32,9 @@ export default function DesignationTable() {
   };
 
   if (loading) {
-    return <Spinner />;
+    return <Loading message="Loading Designation..." />;
   }
+
   const hasDesignations = paginatedDesignations.length > 0;
 
   return (

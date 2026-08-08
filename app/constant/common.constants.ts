@@ -1,0 +1,5 @@
+export const PAGE_SIZE = {
+  EMPLOYEES: 5,
+  DEPARTMENTS: 5,
+  DESIGNATIONS: 5,
+};

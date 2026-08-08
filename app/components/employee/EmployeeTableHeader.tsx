@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import TableContainer from "../ui/TableContainer";
 import SortIcon from "../ui/SortIcon";
 import EmptyState from "../ui/EmptyState";
+import Loading from "../ui/Loading";
 
 export default function EmployeeTable() {
   const dispatch = useAppDispatch();
@@ -40,7 +41,7 @@ export default function EmployeeTable() {
   };
 
   if (loading) {
-    return <Spinner />;
+    return <Loading message="Loading Employees..." />;
   }
 
   const hasEmployees = paginatedEmployees.length > 0;

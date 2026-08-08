@@ -1,27 +1,31 @@
-import { getEmployeeByDepartmentId } from "@/app/services/dashboardApi";
+import {
+  getEmployeeByDepartmentId,
+  getEmployeeByGender,
+  getEmployeeByStatus,
+} from "@/app/services/dashboardApi";
 import { EmployeeDashboardTable } from "@/app/types/employeeDashboardTable.types";
-import { Employee } from "@/app/types/empoyee.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export type DashboardFilter = "" | "department" | "gender" | "status";
+type DashboardSelection = {
+  filter: DashboardFilter;
+  title: string;
+};
 type DashboardState = {
-  departmentEmployees: EmployeeDashboardTable[];
-  genderEmployees: Employee[];
-  statusEmployees: Employee[];
-  recentEmployees: Employee[];
+  selectedEmployees: EmployeeDashboardTable[];
+  selectedTitle: string;
+  selectedFilter: DashboardFilter;
   loading: boolean;
   error: string | null;
-  selectedDepartmentTitle: string;
 };
 
 const initialState: DashboardState = {
-  departmentEmployees: [],
-  genderEmployees: [],
-  statusEmployees: [],
-  recentEmployees: [],
+  selectedEmployees: [],
+  selectedTitle: "",
+  selectedFilter: "",
   loading: false,
   error: null,
-  selectedDepartmentTitle: "",
 };
 
 const fetchEmployeeByDepartmentId = createAsyncThunk(
@@ -42,18 +46,53 @@ const fetchEmployeeByDepartmentId = createAsyncThunk(
   },
 );
 
+const fetchEmployeeByGender = createAsyncThunk(
+  "dashboard/fetchEmployeeByGender",
+  async (gender: string, { rejectWithValue }) => {
+    try {
+      // Employee[]
+      const employees = await getEmployeeByGender(gender);
+      // console.log("API Response:", employees );
+      return employees;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message ?? error.message);
+      } else {
+        return rejectWithValue("Something went wrong!");
+      }
+    }
+  },
+);
+
+const fetchEmployeeByStatus = createAsyncThunk(
+  "dashboard/fetchEmployeeByStatus",
+  async (status: string, { rejectWithValue }) => {
+    try {
+      // Employee[]
+      const employees = await getEmployeeByStatus(status);
+      // console.log("API Response:", employees );
+      return employees;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message ?? error.message);
+      } else {
+        return rejectWithValue("Something went wrong!");
+      }
+    }
+  },
+);
+
 export const DashboardSlice = createSlice({
   name: "dashboard",
   initialState,
   reducers: {
-    setDepartmentEmployees: (
+    //Selectd Department
+    setDashboardSelection: (
       state,
-      action: PayloadAction<EmployeeDashboardTable[]>,
+      action: PayloadAction<DashboardSelection>,
     ) => {
-      state.departmentEmployees = action.payload;
-    },
-    setSelectedDepartmentTitle: (state, action: PayloadAction<string>) => {
-      state.selectedDepartmentTitle = action.payload;
+      state.selectedFilter = action.payload.filter;
+      state.selectedTitle = action.payload.title;
     },
   },
   extraReducers: (addBuilder) => {
@@ -65,7 +104,7 @@ export const DashboardSlice = createSlice({
       fetchEmployeeByDepartmentId.fulfilled,
       (state, action) => {
         state.loading = false;
-        state.departmentEmployees = action.payload;
+        state.selectedEmployees = action.payload;
       },
     );
     addBuilder.addCase(
@@ -75,9 +114,39 @@ export const DashboardSlice = createSlice({
         state.error = action.payload as string;
       },
     );
+    //For Gender
+    addBuilder.addCase(fetchEmployeeByGender.pending, (state, action) => {
+      state.loading = true;
+      state.error = null;
+    });
+    addBuilder.addCase(fetchEmployeeByGender.fulfilled, (state, action) => {
+      state.loading = false;
+      state.selectedEmployees = action.payload;
+    });
+    addBuilder.addCase(fetchEmployeeByGender.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
+    //For status
+    addBuilder.addCase(fetchEmployeeByStatus.pending, (state, action) => {
+      state.loading = true;
+      state.error = null;
+    });
+    addBuilder.addCase(fetchEmployeeByStatus.fulfilled, (state, action) => {
+      state.loading = false;
+      state.selectedEmployees = action.payload;
+    });
+    addBuilder.addCase(fetchEmployeeByStatus.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
   },
 });
-export const { setDepartmentEmployees, setSelectedDepartmentTitle } =
-  DashboardSlice.actions;
-export { fetchEmployeeByDepartmentId };
+export const { setDashboardSelection } = DashboardSlice.actions;
+export {
+  fetchEmployeeByDepartmentId,
+  fetchEmployeeByGender,
+  fetchEmployeeByStatus,
+};
 export default DashboardSlice.reducer;

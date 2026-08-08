@@ -1,3 +1,4 @@
+import { PAGE_SIZE } from "@/app/constant/common.constants";
 import { RootState } from "@/app/store/store";
 import { Employee } from "@/app/types/empoyee.types";
 import { createSelector } from "@reduxjs/toolkit";
@@ -95,7 +96,7 @@ export const selectPaginatedEmployees = createSelector(
   (sortedEmployees, employeeState) => {
     const { currentPage, perPage } = employeeState;
 
-    const startIndex = (currentPage - 1) * perPage;
+    const startIndex = (currentPage - 1) * PAGE_SIZE.EMPLOYEES;
 
     return sortedEmployees.slice(startIndex, startIndex + perPage);
   },

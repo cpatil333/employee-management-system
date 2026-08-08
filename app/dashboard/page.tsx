@@ -36,15 +36,21 @@ export default function DashboardPage() {
     (state: RootState) => state.employee.employeeList,
   );
 
-  const setDepartmentEmployees = useAppSelector(
-    (state) => state.dashboard.departmentEmployees,
+  const tableData = useAppSelector(
+    (state: RootState) => state.dashboard.selectedEmployees,
   );
 
-  const DepartmentTitle = useAppSelector(
-    (state) => state.dashboard.selectedDepartmentTitle,
+  const title = useAppSelector(
+    (state: RootState) => state.dashboard.selectedTitle,
   );
 
-  console.log(setDepartmentEmployees);
+  const filter = useAppSelector(
+    (state: RootState) => state.dashboard.selectedFilter,
+  );
+
+  const loading = useAppSelector((state) => state.dashboard.loading);
+
+  const error = useAppSelector((state) => state.dashboard.error);
 
   const dashboard = useMemo(() => {
     return [
@@ -113,12 +119,13 @@ export default function DashboardPage() {
           />
         </ChartCard>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="w-full gap-6 mb-8">
         <DashboardEmployeeTable
-          tableData={setDepartmentEmployees}
-          title={DepartmentTitle}
-          loading={false}
-          hasError={false}
+          tableData={tableData}
+          filter={filter}
+          title={title}
+          loading={loading}
+          error={error}
         />
       </div>
     </>
